@@ -1,8 +1,9 @@
 //#include "mainwindow.h"
-#include"stream_sdk_for_pc/threadteast.h"
-#include"stream_sdk_for_pc/changetest.h"
-#include<stream_sdk_for_pc/origintest.h>
-#include"thinkgear/thinkgearlinktester.h"
+// 旧测试入口（与三线程主链无关），注释保留
+// #include"stream_sdk_for_pc/threadteast.h"
+// #include"stream_sdk_for_pc/changetest.h"
+// #include<stream_sdk_for_pc/origintest.h>
+// #include"thinkgear/thinkgearlinktester.h"
 #include "mainwindow.h"
 #include<QApplication>
 int main(int argc, char *argv[])
@@ -13,8 +14,9 @@ int main(int argc, char *argv[])
     MainWindow w;
 
 
-    auto *tester=new ThinkGearLinkTester(&w);
-    w.attachLinkTester(tester);
+    /*auto *tester=new ThinkGearLinkTester(&w);
+    w.attachLinkTester(tester);*/
+    w.initThreads();
     w.show();
     return app.exec();
 

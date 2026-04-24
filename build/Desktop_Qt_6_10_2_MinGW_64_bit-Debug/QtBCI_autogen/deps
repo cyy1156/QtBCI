@@ -8,6 +8,10 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/CMakeFiles/3.30.5/CMakeRCCompiler.cmake \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/CMakeFiles/3.30.5/CMakeSystem.cmake \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/moc_predefs.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/csvlogworker.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/csvlogworker.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/logwbuffer.cpp \
@@ -19,6 +23,10 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/main.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/origintest.cpp \
@@ -36,6 +44,11 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearlinktester.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/data_handler/inc/data_handler.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_array.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_constants.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_exception.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/shared_export.h \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QByteArray \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QCache \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QDateTime \
@@ -507,6 +520,7 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QCommonStyle \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QLayout \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QMainWindow \
+	D:/qt/6.10.2/mingw_64/include/QtWidgets/QPlainTextEdit \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QScrollerProperties \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QWidget \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QtWidgets \
@@ -1000,6 +1014,7 @@ QtBCI_autogen/timestamp: \
 	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cmath \
 	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/codecvt \
 	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/compare \
+	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/complex \
 	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/condition_variable \
 	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cstddef \
 	D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cstdint \

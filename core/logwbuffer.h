@@ -9,9 +9,12 @@
 #include <QtGlobal>
 struct LogItem {
     QString tsMs ;
+    QString kind;      // raw / preproc
     quint64 seq = 0;
     qint16 rawInt16 = 0;
+    quint8 signalQuality = 255; // 0~200, 255=unknown
     double rawUv = 0.0;
+    double preprocUv = 0.0;
 };
 class LogBuffer
 {

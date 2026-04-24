@@ -29,6 +29,7 @@ public:
 
     quint64 sampleCount() const { return m_seq; }
 
+    void resetSequence(qint64 start =0){m_seq=start;}
 public slots:
     // 最简入口：只有 raw
     void onRaw(qint16 rawValue);
