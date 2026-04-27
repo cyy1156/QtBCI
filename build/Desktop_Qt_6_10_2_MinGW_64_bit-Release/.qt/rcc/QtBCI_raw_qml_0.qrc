@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="/QtBCI/">
+    <file alias="ui/qml/AppShell.qml">D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/AppShell.qml</file>
+    <file alias="ui/qml/components/IndustrialPanel.qml">D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/components/IndustrialPanel.qml</file>
+    <file alias="ui/qml/components/IndustrialButton.qml">D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/components/IndustrialButton.qml</file>
+    <file alias="ui/qml/components/SectionTitle.qml">D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/components/SectionTitle.qml</file>
+    <file alias="ui/qml/theme/Theme.qml">D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/theme/Theme.qml</file>
+  </qresource>
+</RCC>
+

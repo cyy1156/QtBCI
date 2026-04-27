@@ -1,0 +1,61 @@
+{
+    "classes": [
+        {
+            "className": "ThinkGearFrameAssembler",
+            "lineNumber": 7,
+            "object": true,
+            "qualifiedClassName": "ThinkGearFrameAssembler",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "frame",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 24,
+                    "name": "frameReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "previousSize",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 26,
+                    "name": "rxBufferOverflowed",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "frame",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 22,
+                    "name": "onBytes",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "thinkgearframeassembler.h",
+    "outputRevision": 69
+}

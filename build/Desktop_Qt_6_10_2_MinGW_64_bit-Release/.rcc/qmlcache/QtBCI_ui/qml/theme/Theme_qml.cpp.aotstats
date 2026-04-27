@@ -1,0 +1,15 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                    ],
+                    "filePath": "D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/theme/Theme.qml"
+                }
+            ],
+            "moduleId": "QtBCI(QtBCI)"
+        }
+    ]
+}

@@ -34,3 +34,11 @@ int LogBuffer::size() const
     QMutexLocker locker(&m_mutex);
     return m_q.size();
 }
+
+void LogBuffer::clear(bool resetDropped)
+{
+    QMutexLocker locker(&m_mutex);
+    m_q.clear();
+    if (resetDropped)
+        m_dropped = 0;
+}

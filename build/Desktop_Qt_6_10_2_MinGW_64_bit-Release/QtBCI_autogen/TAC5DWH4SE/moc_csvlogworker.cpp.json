@@ -1,0 +1,116 @@
+{
+    "classes": [
+        {
+            "className": "CsvLogWorker",
+            "lineNumber": 16,
+            "object": true,
+            "qualifiedClassName": "CsvLogWorker",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 34,
+                    "name": "workerError",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 35,
+                    "name": "workerInfo",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "items",
+                            "type": "int"
+                        },
+                        {
+                            "name": "queueSizeAfter",
+                            "type": "int"
+                        },
+                        {
+                            "name": "droppedCount",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 36,
+                    "name": "drained",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "index": 3,
+                    "lineNumber": 29,
+                    "name": "start",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 4,
+                    "lineNumber": 30,
+                    "name": "stop",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "sp",
+                            "type": "SpectrumResult"
+                        }
+                    ],
+                    "index": 5,
+                    "lineNumber": 31,
+                    "name": "onSpectrumResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "fr",
+                            "type": "FftResult"
+                        }
+                    ],
+                    "index": 6,
+                    "lineNumber": 32,
+                    "name": "onFftResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 7,
+                    "lineNumber": 39,
+                    "name": "onFlushTick",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "csvlogworker.h",
+    "outputRevision": 69
+}

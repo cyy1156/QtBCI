@@ -1,0 +1,172 @@
+{
+    "classes": [
+        {
+            "className": "MainWindow",
+            "lineNumber": 20,
+            "object": true,
+            "qualifiedClassName": "MainWindow",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "line",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 106,
+                    "name": "logLineReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "values",
+                            "type": "QList<double>"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 107,
+                    "name": "plotDataReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "running",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 108,
+                    "name": "runningChanged",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "index": 3,
+                    "lineNumber": 30,
+                    "name": "on_pushButton_start_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 4,
+                    "lineNumber": 31,
+                    "name": "on_pushButton_stop_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 5,
+                    "lineNumber": 32,
+                    "name": "on_pushButton_clear_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 6,
+                    "lineNumber": 33,
+                    "name": "on_pushButton_save_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "secIndex",
+                            "type": "quint64"
+                        },
+                        {
+                            "name": "rawPerSec",
+                            "type": "int"
+                        },
+                        {
+                            "name": "framePerSec",
+                            "type": "int"
+                        },
+                        {
+                            "name": "warnPerSec",
+                            "type": "int"
+                        },
+                        {
+                            "name": "pass",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 7,
+                    "lineNumber": 34,
+                    "name": "onSecondReport",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 8,
+                    "lineNumber": 35,
+                    "name": "onTestMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 9,
+                    "lineNumber": 36,
+                    "name": "onPlotRefreshTick",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "portName",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 10,
+                    "lineNumber": 39,
+                    "name": "startWithPort",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 11,
+                    "lineNumber": 40,
+                    "name": "stopAcquisition",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 12,
+                    "lineNumber": 41,
+                    "name": "clearSession",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 13,
+                    "lineNumber": 42,
+                    "name": "openSaveDialog",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QMainWindow"
+                }
+            ]
+        }
+    ],
+    "inputFile": "mainwindow.h",
+    "outputRevision": 69
+}

@@ -1,0 +1,74 @@
+{
+    "classes": [
+        {
+            "className": "RawtOutUvProcessor",
+            "lineNumber": 17,
+            "object": true,
+            "qualifiedClassName": "RawtOutUvProcessor",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "sample",
+                            "type": "UvSample"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 42,
+                    "name": "uvSampleReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "uv",
+                            "type": "double"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 45,
+                    "name": "uvValueReady",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "rawValue",
+                            "type": "qint16"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 35,
+                    "name": "onRaw",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "rawValue",
+                            "type": "qint16"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 38,
+                    "name": "onRawWithMeta",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "rawtouvprocessor.h",
+    "outputRevision": 69
+}

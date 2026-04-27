@@ -1,0 +1,23 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                        {
+                            "codegenResult": 0,
+                            "column": 12,
+                            "durationMicroseconds": 5000,
+                            "functionName": "color",
+                            "line": 7,
+                            "message": ""
+                        }
+                    ],
+                    "filePath": "D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/ui/qml/components/SectionTitle.qml"
+                }
+            ],
+            "moduleId": "QtBCI(QtBCI)"
+        }
+    ]
+}

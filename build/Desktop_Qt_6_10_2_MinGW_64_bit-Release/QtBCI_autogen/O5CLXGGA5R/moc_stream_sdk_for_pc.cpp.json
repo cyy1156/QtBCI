@@ -1,0 +1,18 @@
+{
+    "classes": [
+        {
+            "className": "Stream_sdk_for_pc",
+            "lineNumber": 16,
+            "object": true,
+            "qualifiedClassName": "Stream_sdk_for_pc",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "stream_sdk_for_pc.h",
+    "outputRevision": 69
+}

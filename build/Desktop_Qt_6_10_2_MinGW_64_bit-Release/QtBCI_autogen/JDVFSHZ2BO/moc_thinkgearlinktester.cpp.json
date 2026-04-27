@@ -1,0 +1,136 @@
+{
+    "classes": [
+        {
+            "className": "ThinkGearLinkTester",
+            "lineNumber": 16,
+            "object": true,
+            "qualifiedClassName": "ThinkGearLinkTester",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "secIndex",
+                            "type": "quint64"
+                        },
+                        {
+                            "name": "rawCountSec",
+                            "type": "int"
+                        },
+                        {
+                            "name": "frameCountPerSec",
+                            "type": "int"
+                        },
+                        {
+                            "name": "warningCountPerSec",
+                            "type": "int"
+                        },
+                        {
+                            "name": "pass",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 37,
+                    "name": "secondReport",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 42,
+                    "name": "testMessage",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "uv",
+                            "type": "double"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 47,
+                    "name": "onRawUvReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "frame",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 48,
+                    "name": "onFrameReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 4,
+                    "lineNumber": 49,
+                    "name": "onParseWarning",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 5,
+                    "lineNumber": 50,
+                    "name": "onPortError",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 6,
+                    "lineNumber": 51,
+                    "name": "onTick1s",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "raw",
+                            "type": "qint16"
+                        }
+                    ],
+                    "index": 7,
+                    "lineNumber": 52,
+                    "name": "onRawInt16Ready",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "thinkgearlinktester.h",
+    "outputRevision": 69
+}

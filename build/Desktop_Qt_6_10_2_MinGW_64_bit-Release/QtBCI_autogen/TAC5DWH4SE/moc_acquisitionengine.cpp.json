@@ -1,0 +1,137 @@
+{
+    "classes": [
+        {
+            "className": "AcquisitionEngine",
+            "lineNumber": 19,
+            "object": true,
+            "qualifiedClassName": "AcquisitionEngine",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "pkt",
+                            "type": "RawPacket"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 29,
+                    "name": "rawPacketReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 30,
+                    "name": "warningMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 31,
+                    "name": "statusMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "running",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 32,
+                    "name": "runningChanged",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "portName",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "baudRate",
+                            "type": "qint32"
+                        }
+                    ],
+                    "index": 4,
+                    "lineNumber": 25,
+                    "name": "start",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 5,
+                    "lineNumber": 26,
+                    "name": "stop",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "raw",
+                            "type": "qint16"
+                        }
+                    ],
+                    "index": 6,
+                    "lineNumber": 35,
+                    "name": "onRawInt16",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "v",
+                            "type": "quint8"
+                        }
+                    ],
+                    "index": 7,
+                    "lineNumber": 36,
+                    "name": "onSignalQuality",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "uv",
+                            "type": "double"
+                        }
+                    ],
+                    "index": 8,
+                    "lineNumber": 37,
+                    "name": "onUvReady",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "acquisitionengine.h",
+    "outputRevision": 69
+}

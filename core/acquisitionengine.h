@@ -23,6 +23,7 @@ public:
 
 public slots:
     void start(const QString &portName, qint32 baudRate);
+    void startWithConfig(const SerialPortConfig &cfg);
     void stop();
 
 signals:

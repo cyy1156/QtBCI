@@ -68,6 +68,9 @@ private:
     void updateSavePathUi();
     void appendUiActionLog(const QString &category, const QString &message);
     void appendLogLine(const QString &line);
+    void loadSerialSettings();
+    void saveSerialSettings();
+    bool showSerialConfigDialog();
 public:
     void restartSessionWithReset(const QString &port, qint32 baud);
 
@@ -93,5 +96,6 @@ public:
     bool m_autoScrollEnabled = true;
     int m_pausedNewLogCount = 0;
     bool m_acqRunning = false;
+    SerialPortConfig m_serialCfg;
 };
 #endif // MAINWINDOW_H

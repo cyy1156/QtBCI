@@ -65,7 +65,10 @@ void SerialPort::setupConnections()
 bool SerialPort::openReadWrite()
 {
     if (m_port.isOpen())
+    {
+        m_port.clear(QSerialPort::AllDirections);
         m_port.close();
+    }
     applyConfig();
     const bool ok = m_port.open(QIODevice::ReadWrite);
     if (!ok)
@@ -76,7 +79,10 @@ bool SerialPort::openReadWrite()
 bool SerialPort::openReadOnly()
 {
     if (m_port.isOpen())
+    {
+        m_port.clear(QSerialPort::AllDirections);
         m_port.close();
+    }
     applyConfig();
     const bool ok = m_port.open(QIODevice::ReadOnly);
     if (!ok)
@@ -87,7 +93,10 @@ bool SerialPort::openReadOnly()
 void SerialPort::close()
 {
     if (m_port.isOpen())
+    {
+        m_port.clear(QSerialPort::AllDirections);
         m_port.close();
+    }
 }
 
 bool SerialPort::isOpen() const

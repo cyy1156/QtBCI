@@ -1,0 +1,46 @@
+{
+    "classes": [
+        {
+            "className": "SerialPort",
+            "lineNumber": 18,
+            "object": true,
+            "qualifiedClassName": "SerialPort",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "chunk",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 38,
+                    "name": "dataReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "message",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 39,
+                    "name": "portError",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "serialport.h",
+    "outputRevision": 69
+}

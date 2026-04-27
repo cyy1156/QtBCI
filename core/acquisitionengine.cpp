@@ -48,6 +48,15 @@ void AcquisitionEngine::onUvReady(double uv)
 }
 void AcquisitionEngine::start(const QString &portName, qint32 baudRate)
 {
+    SerialPortConfig cfg;
+    cfg.portName = portName;
+    cfg.baudRate = baudRate;
+    cfg.readBufferSize = 32 * 1024;
+    startWithConfig(cfg);
+}
+
+void AcquisitionEngine::startWithConfig(const SerialPortConfig &cfg)
+{
     if (m_running) {
         emit statusMessage(QStringLiteral("采集已在运行，忽略重复开始"));
         return;
@@ -59,21 +68,22 @@ void AcquisitionEngine::start(const QString &portName, qint32 baudRate)
     if (m_assembler)
         m_assembler->clearBuffer();
 
-    SerialPortConfig cfg;
-    cfg.portName = portName;
-    cfg.baudRate = baudRate;
-    cfg.readBufferSize = 32 * 1024;
-    m_serial->setConfig(cfg);
+    SerialPortConfig actual = cfg;
+    if (actual.readBufferSize <= 0)
+        actual.readBufferSize = 32 * 1024;
+    m_serial->setConfig(actual);
 
     if (!m_serial->openReadOnly()) {
         m_running = false;
         emit runningChanged(false);
-        emit warningMessage(QStringLiteral("串口打开失败: %1").arg(portName));
+        emit warningMessage(QStringLiteral("串口打开失败: %1").arg(actual.portName));
         return;
     }
     m_running = true;
     emit runningChanged(true);
-    emit statusMessage(QStringLiteral("采集已启动: %1 @ %2").arg(portName).arg(baudRate));
+    emit statusMessage(QStringLiteral("采集已启动: %1 @ %2")
+                           .arg(actual.portName)
+                           .arg(actual.baudRate));
 }
 
 void AcquisitionEngine::stop()

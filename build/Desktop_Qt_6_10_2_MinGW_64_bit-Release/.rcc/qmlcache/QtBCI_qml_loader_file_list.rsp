@@ -1,0 +1,9 @@
+--resource
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.qt/rcc/qmake_QtBCI.qrc
+--resource
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.qt/rcc/QtBCI_raw_qml_0.qrc
+/QtBCI/ui/qml/AppShell.qml
+/QtBCI/ui/qml/components/IndustrialPanel.qml
+/QtBCI/ui/qml/components/IndustrialButton.qml
+/QtBCI/ui/qml/components/SectionTitle.qml
+/QtBCI/ui/qml/theme/Theme.qml

@@ -1,0 +1,14 @@
+-I
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release
+-I
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI
+-I
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release
+-I
+D:/qt/6.10.2/mingw_64/qml
+--resource
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.qt/rcc/qmake_QtBCI.qrc
+--resource
+D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.qt/rcc/QtBCI_raw_qml_0.qrc
+--module
+QtBCI

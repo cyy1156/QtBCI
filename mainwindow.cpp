@@ -7,8 +7,6 @@
 #include <QDateTime>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QInputDialog>
-#include <QLineEdit>
 #include <QFile>
 #include <QTextStream>
 #include <QStringConverter>
@@ -29,12 +27,26 @@
 #include <algorithm>
 #include <QHBoxLayout>
 #include <QScrollBar>
+#include <QSerialPortInfo>
+#include <QSettings>
+#include <QComboBox>
+#include <QFormLayout>
+#include <QAction>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    loadSerialSettings();
+
+    if (ui->menu) {
+        auto *actSerial = new QAction(QStringLiteral("串口设置"), this);
+        connect(actSerial, &QAction::triggered, this, [this]() {
+            showSerialConfigDialog();
+        });
+        ui->menu->addAction(actSerial);
+    }
 
     // 控制面板四个按钮放大到约 1.5 倍
     auto scaleButton = [](QPushButton *btn) {
@@ -57,12 +69,18 @@ MainWindow::MainWindow(QWidget *parent)
     scaleButton(ui->pushButton_stop);
     scaleButton(ui->pushButton_clear);
     scaleButton(ui->pushButton_save);
+    scaleButton(ui->pushButton_serialConfig);
+    if (ui->pushButton_serialConfig) {
+        connect(ui->pushButton_serialConfig, &QPushButton::clicked, this, [this]() {
+            showSerialConfigDialog();
+        });
+    }
 
-    // 右侧区域上下比例：图像 60% / 日志 40%（日志区更大）
-    if (ui->verticalLayout)
+    // 右侧区域上下比例：图像 60% / 日志 40%
+    if (ui->verticalLayoutRight)
     {
-        ui->verticalLayout->setStretch(0, 6); // widget_4: 图像
-        ui->verticalLayout->setStretch(1, 4); // widget_5: 日志
+        ui->verticalLayoutRight->setStretch(0, 6);
+        ui->verticalLayoutRight->setStretch(1, 4);
     }
 
     // 用 QCustomPlot 替换原有 listWidget_picture，做更美观的实时曲线
@@ -440,16 +458,10 @@ void MainWindow::on_pushButton_start_clicked()
    // updateLogCsvPathUi();
     updateSavePathUi();
 
-    bool ok =false;
-    const QString port =QInputDialog::getText(
-        this,
-        QStringLiteral("串口"),
-        QStringLiteral("端口名（如 COM7）:"),
-        QLineEdit::Normal,
-        QStringLiteral("COM7"),
-        &ok);
-    if(!ok||port.trimmed().isEmpty())
-        return;
+    if (m_serialCfg.portName.trimmed().isEmpty()) {
+        if (!showSerialConfigDialog())
+            return;
+    }
 
     // 线程C：按开关显式启动/停止 CSV worker
     if (m_csvLoggingEnable) {
@@ -492,11 +504,14 @@ void MainWindow::on_pushButton_start_clicked()
         }
     }, Qt::QueuedConnection);
     // 线程A：启动采集
-    QMetaObject::invokeMethod(m_acq, [this, port]() {
-        m_acq->start(port.trimmed(), 57600);
+    const SerialPortConfig cfg = m_serialCfg;
+    QMetaObject::invokeMethod(m_acq, [this, cfg]() {
+        m_acq->startWithConfig(cfg);
     }, Qt::QueuedConnection);
 
-    ui->statusbar->showMessage(QStringLiteral("已打开 %1 @57600").arg(port.trimmed()), 5000);
+    ui->statusbar->showMessage(QStringLiteral("已打开 %1 @%2")
+                                   .arg(cfg.portName.trimmed())
+                                   .arg(cfg.baudRate), 5000);
 }
 void MainWindow::on_pushButton_stop_clicked()
 {
@@ -556,6 +571,7 @@ void MainWindow::on_pushButton_save_clicked()
     auto *btnOpenPsd =new QPushButton(QStringLiteral("打开 PSD CSV "),&dlg);
     auto *btnNewFft = new QPushButton(QStringLiteral("新建 FFT CSV"), &dlg);
     auto *btnOpenFft = new QPushButton(QStringLiteral("打开 FFT CSV"), &dlg);
+    auto *btnSerialCfg = new QPushButton(QStringLiteral("串口配置..."), &dlg);
 
 
     auto refresh = [&]() {
@@ -660,11 +676,16 @@ void MainWindow::on_pushButton_save_clicked()
     lay->addWidget(labFft);
     lay->addWidget(btnNewFft);
     lay->addWidget(btnOpenFft);
+    lay->addSpacing(8);
+    lay->addWidget(btnSerialCfg);
 
     auto *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
     connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
     lay->addWidget(box);
+    connect(btnSerialCfg, &QPushButton::clicked, &dlg, [this]() {
+        showSerialConfigDialog();
+    });
 
     if (dlg.exec() != QDialog::Accepted)
         return;
@@ -686,6 +707,121 @@ void MainWindow::on_pushButton_save_clicked()
     appendUiActionLog(QStringLiteral("UI"), QStringLiteral("保存配置：csvEnable=%1, eeg=%2, txt=%3")
                                                 .arg(m_csvLoggingEnable).arg(m_eegCsvPath, m_uiTxtPath));
 
+}
+
+void MainWindow::loadSerialSettings()
+{
+    QSettings settings(QStringLiteral("QtBCI"), QStringLiteral("QtBCI"));
+    m_serialCfg.portName = settings.value(QStringLiteral("serial/portName"), QStringLiteral("COM7")).toString();
+    m_serialCfg.baudRate = settings.value(QStringLiteral("serial/baudRate"), 57600).toInt();
+    m_serialCfg.dataBits = static_cast<QSerialPort::DataBits>(
+        settings.value(QStringLiteral("serial/dataBits"), static_cast<int>(QSerialPort::Data8)).toInt());
+    m_serialCfg.parity = static_cast<QSerialPort::Parity>(
+        settings.value(QStringLiteral("serial/parity"), static_cast<int>(QSerialPort::NoParity)).toInt());
+    m_serialCfg.stopBits = static_cast<QSerialPort::StopBits>(
+        settings.value(QStringLiteral("serial/stopBits"), static_cast<int>(QSerialPort::OneStop)).toInt());
+    m_serialCfg.flowControl = static_cast<QSerialPort::FlowControl>(
+        settings.value(QStringLiteral("serial/flowControl"), static_cast<int>(QSerialPort::NoFlowControl)).toInt());
+}
+
+void MainWindow::saveSerialSettings()
+{
+    QSettings settings(QStringLiteral("QtBCI"), QStringLiteral("QtBCI"));
+    settings.setValue(QStringLiteral("serial/portName"), m_serialCfg.portName);
+    settings.setValue(QStringLiteral("serial/baudRate"), m_serialCfg.baudRate);
+    settings.setValue(QStringLiteral("serial/dataBits"), static_cast<int>(m_serialCfg.dataBits));
+    settings.setValue(QStringLiteral("serial/parity"), static_cast<int>(m_serialCfg.parity));
+    settings.setValue(QStringLiteral("serial/stopBits"), static_cast<int>(m_serialCfg.stopBits));
+    settings.setValue(QStringLiteral("serial/flowControl"), static_cast<int>(m_serialCfg.flowControl));
+}
+
+bool MainWindow::showSerialConfigDialog()
+{
+    QDialog dlg(this);
+    dlg.setWindowTitle(QStringLiteral("串口设置"));
+    dlg.setMinimumWidth(420);
+
+    auto *lay = new QVBoxLayout(&dlg);
+    auto *form = new QFormLayout();
+
+    auto *portBox = new QComboBox(&dlg);
+    for (const auto &info : QSerialPortInfo::availablePorts()) {
+        portBox->addItem(info.portName(), info.portName());
+    }
+    portBox->setEditable(true);
+    portBox->setCurrentText(m_serialCfg.portName);
+
+    auto *baudBox = new QComboBox(&dlg);
+    baudBox->setEditable(true);
+    const QList<int> bauds{9600, 19200, 38400, 57600, 115200, 230400, 460800};
+    for (int v : bauds) baudBox->addItem(QString::number(v), v);
+    baudBox->setCurrentText(QString::number(m_serialCfg.baudRate));
+
+    auto *dataBitsBox = new QComboBox(&dlg);
+    dataBitsBox->addItem(QStringLiteral("5"), static_cast<int>(QSerialPort::Data5));
+    dataBitsBox->addItem(QStringLiteral("6"), static_cast<int>(QSerialPort::Data6));
+    dataBitsBox->addItem(QStringLiteral("7"), static_cast<int>(QSerialPort::Data7));
+    dataBitsBox->addItem(QStringLiteral("8"), static_cast<int>(QSerialPort::Data8));
+    dataBitsBox->setCurrentIndex(qMax(0, dataBitsBox->findData(static_cast<int>(m_serialCfg.dataBits))));
+
+    auto *parityBox = new QComboBox(&dlg);
+    parityBox->addItem(QStringLiteral("None"), static_cast<int>(QSerialPort::NoParity));
+    parityBox->addItem(QStringLiteral("Even"), static_cast<int>(QSerialPort::EvenParity));
+    parityBox->addItem(QStringLiteral("Odd"), static_cast<int>(QSerialPort::OddParity));
+    parityBox->addItem(QStringLiteral("Mark"), static_cast<int>(QSerialPort::MarkParity));
+    parityBox->addItem(QStringLiteral("Space"), static_cast<int>(QSerialPort::SpaceParity));
+    parityBox->setCurrentIndex(qMax(0, parityBox->findData(static_cast<int>(m_serialCfg.parity))));
+
+    auto *stopBitsBox = new QComboBox(&dlg);
+    stopBitsBox->addItem(QStringLiteral("1"), static_cast<int>(QSerialPort::OneStop));
+    stopBitsBox->addItem(QStringLiteral("1.5"), static_cast<int>(QSerialPort::OneAndHalfStop));
+    stopBitsBox->addItem(QStringLiteral("2"), static_cast<int>(QSerialPort::TwoStop));
+    stopBitsBox->setCurrentIndex(qMax(0, stopBitsBox->findData(static_cast<int>(m_serialCfg.stopBits))));
+
+    auto *flowBox = new QComboBox(&dlg);
+    flowBox->addItem(QStringLiteral("None"), static_cast<int>(QSerialPort::NoFlowControl));
+    flowBox->addItem(QStringLiteral("RTS/CTS"), static_cast<int>(QSerialPort::HardwareControl));
+    flowBox->addItem(QStringLiteral("XON/XOFF"), static_cast<int>(QSerialPort::SoftwareControl));
+    flowBox->setCurrentIndex(qMax(0, flowBox->findData(static_cast<int>(m_serialCfg.flowControl))));
+
+    form->addRow(QStringLiteral("端口"), portBox);
+    form->addRow(QStringLiteral("波特率"), baudBox);
+    form->addRow(QStringLiteral("数据位"), dataBitsBox);
+    form->addRow(QStringLiteral("校验位"), parityBox);
+    form->addRow(QStringLiteral("停止位"), stopBitsBox);
+    form->addRow(QStringLiteral("流控"), flowBox);
+    lay->addLayout(form);
+
+    auto *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
+    connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+    lay->addWidget(box);
+
+    if (dlg.exec() != QDialog::Accepted)
+        return false;
+
+    m_serialCfg.portName = portBox->currentText().trimmed();
+    m_serialCfg.baudRate = baudBox->currentText().toInt();
+    m_serialCfg.dataBits = static_cast<QSerialPort::DataBits>(dataBitsBox->currentData().toInt());
+    m_serialCfg.parity = static_cast<QSerialPort::Parity>(parityBox->currentData().toInt());
+    m_serialCfg.stopBits = static_cast<QSerialPort::StopBits>(stopBitsBox->currentData().toInt());
+    m_serialCfg.flowControl = static_cast<QSerialPort::FlowControl>(flowBox->currentData().toInt());
+
+    if (m_serialCfg.portName.isEmpty() || m_serialCfg.baudRate <= 0) {
+        QMessageBox::warning(this, QStringLiteral("参数无效"), QStringLiteral("请设置有效的端口和波特率。"));
+        return false;
+    }
+
+    saveSerialSettings();
+    appendUiActionLog(QStringLiteral("SERIAL"),
+                      QStringLiteral("串口配置: %1 @%2, data=%3, parity=%4, stop=%5, flow=%6")
+                          .arg(m_serialCfg.portName)
+                          .arg(m_serialCfg.baudRate)
+                          .arg(static_cast<int>(m_serialCfg.dataBits))
+                          .arg(static_cast<int>(m_serialCfg.parity))
+                          .arg(static_cast<int>(m_serialCfg.stopBits))
+                          .arg(static_cast<int>(m_serialCfg.flowControl)));
+    return true;
 }
 void MainWindow::onSecondReport(quint64 secIndex, int rawPerSec, int framePerSec, int warnPerSec, bool pass)
 {

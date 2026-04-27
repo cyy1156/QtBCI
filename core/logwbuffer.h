@@ -24,6 +24,7 @@ public:
     QList<LogItem> drainBatch(int maxItems);     // writer 线程批量取
     int droppedCount() const;
     int size() const;
+    void clear(bool resetDropped = true);
 private:
     int m_capacity = 0;
     mutable QMutex m_mutex;

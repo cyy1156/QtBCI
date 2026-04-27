@@ -1,0 +1,107 @@
+{
+    "classes": [
+        {
+            "className": "AlgorithmEngine",
+            "lineNumber": 52,
+            "object": true,
+            "qualifiedClassName": "AlgorithmEngine",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "chunk",
+                            "type": "PlotChunk"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 62,
+                    "name": "plotChunkReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "res",
+                            "type": "AlgoResult"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 63,
+                    "name": "algoResultReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "res",
+                            "type": "SpectrumResult"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 64,
+                    "name": "spectrumReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "res",
+                            "type": "FftResult"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 65,
+                    "name": "fftResultReady",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "pkt",
+                            "type": "RawPacket"
+                        }
+                    ],
+                    "index": 4,
+                    "lineNumber": 58,
+                    "name": "onRawPacket",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "n",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 5,
+                    "lineNumber": 59,
+                    "name": "setWindowSize",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 6,
+                    "lineNumber": 60,
+                    "name": "resetState",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "algorithmengine.h",
+    "outputRevision": 69
+}

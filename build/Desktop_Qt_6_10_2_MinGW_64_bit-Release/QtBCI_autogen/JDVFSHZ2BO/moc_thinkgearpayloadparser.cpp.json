@@ -1,0 +1,126 @@
+{
+    "classes": [
+        {
+            "className": "ThinkGearPayloadParser",
+            "lineNumber": 19,
+            "object": true,
+            "qualifiedClassName": "ThinkGearPayloadParser",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "qint16"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 28,
+                    "name": "rawReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "quint8"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 35,
+                    "name": "signalQualityReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "quint8"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 36,
+                    "name": "attentionReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "quint8"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 37,
+                    "name": "meditationReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "quint8"
+                        }
+                    ],
+                    "index": 4,
+                    "lineNumber": 38,
+                    "name": "blinkReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "power",
+                            "type": "ThinkGearEegPower"
+                        }
+                    ],
+                    "index": 5,
+                    "lineNumber": 40,
+                    "name": "eegPowerReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "message",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 6,
+                    "lineNumber": 42,
+                    "name": "parseWarning",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "frame",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "index": 7,
+                    "lineNumber": 25,
+                    "name": "parseFrame",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "thinkgearpayloadparser.h",
+    "outputRevision": 69
+}

@@ -1,0 +1,10 @@
+module QtBCI
+typeinfo QtBCI.qmltypes
+prefer :/QtBCI/
+AppShell 1.0 ui/qml/AppShell.qml
+IndustrialPanel 1.0 ui/qml/components/IndustrialPanel.qml
+IndustrialButton 1.0 ui/qml/components/IndustrialButton.qml
+SectionTitle 1.0 ui/qml/components/SectionTitle.qml
+singleton Theme 1.0 ui/qml/theme/Theme.qml
+depends QtQuick
+
