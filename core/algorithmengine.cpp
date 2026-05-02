@@ -7,6 +7,9 @@ AlgorithmEngine::AlgorithmEngine(QObject *parent) : QObject(parent) {}
 
 void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
 {
+    if (!m_running)
+        return;
+
     QDateTime now=QDateTime::currentDateTime();
 
 

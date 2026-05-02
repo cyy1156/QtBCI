@@ -55,6 +55,8 @@ template <> constexpr inline auto AlgorithmEngine::qt_create_metaobjectdata<qt_m
         "pkt",
         "setWindowSize",
         "n",
+        "setRunning",
+        "running",
         "resetState"
     };
 
@@ -83,8 +85,12 @@ template <> constexpr inline auto AlgorithmEngine::qt_create_metaobjectdata<qt_m
         QtMocHelpers::SlotData<void(int)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::Int, 16 },
         }}),
+        // Slot 'setRunning'
+        QtMocHelpers::SlotData<void(bool)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 18 },
+        }}),
         // Slot 'resetState'
-        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -114,7 +120,8 @@ void AlgorithmEngine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 3: _t->fftResultReady((*reinterpret_cast<std::add_pointer_t<FftResult>>(_a[1]))); break;
         case 4: _t->onRawPacket((*reinterpret_cast<std::add_pointer_t<RawPacket>>(_a[1]))); break;
         case 5: _t->setWindowSize((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 6: _t->resetState(); break;
+        case 6: _t->setRunning((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
+        case 7: _t->resetState(); break;
         default: ;
         }
     }
@@ -189,14 +196,14 @@ int AlgorithmEngine::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }

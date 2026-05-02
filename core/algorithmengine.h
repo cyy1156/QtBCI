@@ -57,6 +57,7 @@ public:
 public slots:
     void onRawPacket(const RawPacket &pkt);   // 接收线程A样本
     void setWindowSize(int n) { m_windowSize = n; }
+    void setRunning(bool running) { m_running = running; }
     void resetState();
 signals:
     void plotChunkReady(const PlotChunk &chunk); // 发给UI线程绘图
@@ -69,6 +70,7 @@ private:
     EegPreprocessPipeline m_pp;
     PsdFeatureExtractor m_psd;
     FftFeatureExtractor m_fft;
+    bool m_running = true;
 };
 
 #endif // ALGORITHMENGINE_H

@@ -32,6 +32,9 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QAction>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QToolTip>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -70,17 +73,27 @@ MainWindow::MainWindow(QWidget *parent)
     scaleButton(ui->pushButton_clear);
     scaleButton(ui->pushButton_save);
     scaleButton(ui->pushButton_serialConfig);
+    if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_picture")))
+        scaleButton(btn);
+    if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_changeChart")))
+        scaleButton(btn);
     if (ui->pushButton_serialConfig) {
         connect(ui->pushButton_serialConfig, &QPushButton::clicked, this, [this]() {
             showSerialConfigDialog();
         });
     }
+    if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_picture"))) {
+        connect(btn, &QPushButton::clicked, this, &MainWindow::on_pushButton_picture_clicked);
+    }
+    if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_changeChart"))) {
+        connect(btn, &QPushButton::clicked, this, &MainWindow::on_pushButton_picture_clicked);
+    }
 
-    // 右侧区域上下比例：图像 60% / 日志 40%
+    // 右侧区域上下比例：图像 70% / 日志 30%
     if (ui->verticalLayoutRight)
     {
-        ui->verticalLayoutRight->setStretch(0, 6);
-        ui->verticalLayoutRight->setStretch(1, 4);
+        ui->verticalLayoutRight->setStretch(0, 7);
+        ui->verticalLayoutRight->setStretch(1, 3);
     }
 
     // 用 QCustomPlot 替换原有 listWidget_picture，做更美观的实时曲线
@@ -95,6 +108,7 @@ MainWindow::MainWindow(QWidget *parent)
             m_customPlot->setBackground(QBrush(QColor(20, 24, 31)));
             m_customPlot->axisRect()->setBackground(QColor(20, 24, 31));
             m_customPlot->legend->setVisible(false);
+            m_customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop | Qt::AlignRight);
 
             QPen axisPen(QColor(180, 190, 205));
             m_customPlot->xAxis->setBasePen(axisPen);
@@ -113,14 +127,18 @@ MainWindow::MainWindow(QWidget *parent)
             wavePen.setWidth(1); // 线细一点
             m_customPlot->graph(0)->setPen(wavePen);
             m_customPlot->graph(0)->setAntialiasedFill(false);
+            m_customPlot->graph(0)->setSelectable(QCP::stDataRange);
             m_customPlot->setNotAntialiasedElements(QCP::aeAll); // 降低 CPU 占用
             m_customPlot->xAxis->setLabel(QStringLiteral("Sample"));
             m_customPlot->yAxis->setLabel(QStringLiteral("uV"));
             m_customPlot->xAxis->setRange(0, m_plotCacheMax);
             m_customPlot->yAxis->setRange(-80, 80); // 固定量程避免每帧自适应卡顿
+            setupPlotInteractions();
 
             layout->replaceWidget(ui->listWidget_picture, m_customPlot);
+            layout->removeWidget(ui->listWidget_picture);
             ui->listWidget_picture->hide();
+            ui->listWidget_picture->setParent(nullptr);
         }
     }
 
@@ -234,9 +252,7 @@ void MainWindow::initThreads()
     connect(m_alg, &AlgorithmEngine::plotChunkReady, this, [this](const PlotChunk &pc){
         // 1) 预处理后的绘图数据进入 UI 线程缓存
         m_plotCache += pc.y;
-        if (m_plotCache.size() > m_plotCacheMax) {
-            m_plotCache.remove(0, m_plotCache.size() - m_plotCacheMax);
-        }
+        // 按你的需求保留更完整历史，不在这里截断原始缓存。
         m_plotDirty = true;
 
         // 2) 这里是 UI 线程，后续可直接用 m_plotCache 更新 QCustomPlot
@@ -284,6 +300,34 @@ void MainWindow::initThreads()
     connect(m_alg, &AlgorithmEngine::fftResultReady,
             m_csvWorker, &CsvLogWorker::onFftResult,
             Qt::QueuedConnection);
+    connect(m_alg, &AlgorithmEngine::fftResultReady, this, [this](const FftResult &fr){
+        FftBandPoint p;
+        p.delta = fr.delta;
+        p.theta = fr.theta;
+        p.alpha = fr.alpha;
+        p.beta = fr.beta;
+        p.gamma = fr.gamma;
+        p.seqEnd = fr.seqEnd;
+        m_fftCache.push_back(p);
+        if (m_fftCache.size() > m_featureCacheMax)
+            m_fftCache.remove(0, m_fftCache.size() - m_featureCacheMax);
+        if (m_chartMode == ChartMode::FftSpectrum)
+            m_plotDirty = true;
+    });
+    connect(m_alg, &AlgorithmEngine::spectrumReady, this, [this](const SpectrumResult &sp){
+        PsdBandPoint p;
+        p.delta = sp.delta;
+        p.theta = sp.theta;
+        p.alpha = sp.alpha;
+        p.beta = sp.beta;
+        p.gamma = sp.gamma;
+        p.seqEnd = sp.seqEnd;
+        m_psdCache.push_back(p);
+        if (m_psdCache.size() > m_featureCacheMax)
+            m_psdCache.remove(0, m_psdCache.size() - m_featureCacheMax);
+        if (m_chartMode == ChartMode::BandPower)
+            m_plotDirty = true;
+    });
     connect(m_acq, &AcquisitionEngine::statusMessage, this, [this](const QString &msg){
         appendLogLine(QStringLiteral("[ACQ][INFO] %1").arg(msg));
     });
@@ -451,6 +495,12 @@ void MainWindow::on_pushButton_start_clicked()
     }
     */
 
+    if (m_alg) {
+        QMetaObject::invokeMethod(m_alg, [this]() {
+            m_alg->setRunning(true);
+        }, Qt::QueuedConnection);
+    }
+
     // 操作日志 TXT
     if (m_uiTxtPath.isEmpty())
         m_uiTxtPath = makeDefaultUiTxtPath();
@@ -519,12 +569,23 @@ void MainWindow::on_pushButton_stop_clicked()
     if (!m_acqRunning) {
         ui->statusbar->showMessage(QStringLiteral("当前未在采集"), 2000);
     }
+    if (m_alg) {
+        // 先关算法门控，丢弃停止后的迟到队列包，避免下次 start 突然冒旧数据
+        QMetaObject::invokeMethod(m_alg, [this]() {
+            m_alg->setRunning(false);
+            m_alg->resetState();
+        }, Qt::QueuedConnection);
+    }
     if (m_acq) {
         QMetaObject::invokeMethod(m_acq, "stop", Qt::QueuedConnection);
     }
     if (m_csvWorker) {
         QMetaObject::invokeMethod(m_csvWorker, "stop", Qt::QueuedConnection);
     }
+    // 清日志队列，避免旧数据在下次 start 时再次写盘
+    m_logBuffer.clear(true);
+    // 按你的需求：停止时保留当前图像，不清空 UI 缓存。
+    // 如需清空，使用“清除”按钮。
 
     // 旧单链路停止，注释保留
     /*
@@ -854,6 +915,8 @@ void MainWindow::onTestMessage(const QString &msg)
     // 这里你可保存上次端口，或弹窗重新选择
     const QString port = QStringLiteral("COM7");
     restartSessionWithReset(port, 57600);
+    m_fftCache.clear();
+    m_psdCache.clear();
 
     appendUiActionLog(QStringLiteral("UI"), QStringLiteral("点击清除并重置会话"));
 }
@@ -874,20 +937,17 @@ void MainWindow::onPlotRefreshTick()
     // 优先用 QCustomPlot 在 UI 线程刷新曲线
     if (m_customPlot && m_customPlot->graphCount() > 0)
     {
-        const int n = m_plotCache.size();
-        if (n <= 0)
-            return;
-
-        QVector<double> x(n), y(n);
-        for (int i = 0; i < n; ++i)
-        {
-            x[i] = i;
-            y[i] = m_plotCache[i];
+        switch (m_chartMode) {
+        case ChartMode::RawTime:
+            renderRawChart();
+            break;
+        case ChartMode::FftSpectrum:
+            renderFftChart();
+            break;
+        case ChartMode::BandPower:
+            renderBandPowerChart();
+            break;
         }
-        m_customPlot->graph(0)->setData(x, y, true);
-        m_customPlot->xAxis->setRange(qMax(0, n - m_plotCacheMax), qMax(m_plotCacheMax, n));
-        // y 轴使用固定量程，避免每帧 min/max 计算导致卡顿
-        m_customPlot->replot(QCustomPlot::rpQueuedReplot);
         return;
     }
 
@@ -952,11 +1012,9 @@ void MainWindow::restartSessionWithReset(const QString &port, qint32 baud)
 
     // 3) 清 UI 缓存（主线程）
     m_plotCache.clear();
-    m_plotDirty = false;
-    if (m_customPlot && m_customPlot->graphCount() > 0) {
-        m_customPlot->graph(0)->data()->clear();
-        m_customPlot->replot(QCustomPlot::rpQueuedReplot);
-    }
+    m_fftCache.clear();
+    m_psdCache.clear();
+    clearPlotDisplay();
 
     // 4) 重新配置写盘路径（主CSV + PSD CSV）
     if (m_csvLoggingEnable && m_eegCsvPath.isEmpty())
@@ -988,6 +1046,330 @@ void MainWindow::restartSessionWithReset(const QString &port, qint32 baud)
    /* QMetaObject::invokeMethod(m_acq, [this, port, baud]() {
         m_acq->start(port.trimmed(), baud);
     }, Qt::QueuedConnection);*/
+}
+
+void MainWindow::on_pushButton_picture_clicked()
+{
+    showChartModeDialog();
+}
+
+bool MainWindow::showChartModeDialog()
+{
+    QDialog dlg(this);
+    dlg.setWindowTitle(QStringLiteral("更换图表"));
+    auto *lay = new QVBoxLayout(&dlg);
+
+    auto *rRaw = new QRadioButton(QStringLiteral("生成预处理之后的图像"), &dlg);
+    auto *rFft = new QRadioButton(QStringLiteral("生成FFT频谱的图像"), &dlg);
+    auto *rPsd = new QRadioButton(QStringLiteral("生成功率频段的图像"), &dlg);
+
+    auto *group = new QButtonGroup(&dlg);
+    group->setExclusive(true);
+    group->addButton(rRaw, static_cast<int>(ChartMode::RawTime));
+    group->addButton(rFft, static_cast<int>(ChartMode::FftSpectrum));
+    group->addButton(rPsd, static_cast<int>(ChartMode::BandPower));
+
+    switch (m_chartMode) {
+    case ChartMode::RawTime: rRaw->setChecked(true); break;
+    case ChartMode::FftSpectrum: rFft->setChecked(true); break;
+    case ChartMode::BandPower: rPsd->setChecked(true); break;
+    }
+
+    lay->addWidget(rRaw);
+    lay->addWidget(rFft);
+    lay->addWidget(rPsd);
+
+    auto *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
+    connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+    lay->addWidget(box);
+
+    if (dlg.exec() != QDialog::Accepted)
+        return false;
+
+    m_chartMode = static_cast<ChartMode>(group->checkedId());
+    // 切换图表类型时，重置到自动跟随，避免沿用上一种图的历史坐标导致“看不见曲线”。
+    m_chartAutoFollow = true;
+    m_plotDirty = true;
+    return true;
+}
+
+void MainWindow::ensureGraphCount(int count)
+{
+    if (!m_customPlot)
+        return;
+    while (m_customPlot->graphCount() < count) {
+        m_customPlot->addGraph();
+        m_customPlot->graph(m_customPlot->graphCount() - 1)->setSelectable(QCP::stDataRange);
+    }
+}
+
+void MainWindow::setupPlotInteractions()
+{
+    if (!m_customPlot)
+        return;
+    m_customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    m_customPlot->axisRect()->setRangeDrag(Qt::Horizontal);
+    m_customPlot->axisRect()->setRangeZoom(Qt::Horizontal);
+
+    connect(m_customPlot->xAxis, qOverload<const QCPRange &>(&QCPAxis::rangeChanged), this, [this](const QCPRange &) {
+        if (m_updatingPlotRange)
+            return;
+        m_chartAutoFollow = false;
+    });
+    connect(m_customPlot, &QCustomPlot::mouseDoubleClick, this, [this](QMouseEvent *) {
+        m_chartAutoFollow = true;
+        m_plotDirty = true;
+    });
+    if (!m_clickMarker) {
+        m_clickMarker = new QCPItemTracer(m_customPlot);
+        m_clickMarker->setClipToAxisRect(true);
+        m_clickMarker->position->setType(QCPItemPosition::ptPlotCoords);
+        m_clickMarker->position->setAxes(m_customPlot->xAxis, m_customPlot->yAxis);
+        m_clickMarker->setStyle(QCPItemTracer::tsCircle);
+        m_clickMarker->setPen(QPen(QColor(255, 80, 80), 2));
+        m_clickMarker->setBrush(QBrush(QColor(255, 80, 80)));
+        m_clickMarker->setSize(10);
+        m_clickMarker->setVisible(false);
+        m_clickMarker->setLayer(QStringLiteral("overlay"));
+    }
+    connect(
+        m_customPlot,
+        &QCustomPlot::plottableClick,
+        this,
+        [this](QCPAbstractPlottable *plottable, int dataIndex, QMouseEvent *event) {
+            if (!plottable || dataIndex < 0 || !event)
+                return;
+            auto *i1d = plottable->interface1D();
+            if (!i1d || dataIndex >= i1d->dataCount())
+                return;
+            const double x = i1d->dataMainKey(dataIndex);
+            const double y = i1d->dataMainValue(dataIndex);
+            const QString name = plottable->name().isEmpty() ? QStringLiteral("curve") : plottable->name();
+            const QString text = QStringLiteral("%1\nx=%2, y=%3")
+                                     .arg(name)
+                                     .arg(x, 0, 'f', 2)
+                                     .arg(y, 0, 'f', 3);
+            if (m_clickMarker) {
+                m_clickMarker->position->setCoords(x, y);
+                m_clickMarker->setVisible(true);
+                m_customPlot->replot(QCustomPlot::rpQueuedReplot);
+            }
+            QToolTip::showText(event->globalPosition().toPoint(), text, m_customPlot);
+            if (ui && ui->statusbar) {
+                ui->statusbar->showMessage(
+                    QStringLiteral("%1: x=%2, y=%3").arg(name).arg(x, 0, 'f', 2).arg(y, 0, 'f', 3),
+                    2500
+                );
+            }
+        }
+    );
+}
+
+void MainWindow::clearPlotDisplay()
+{
+    m_plotDirty = false;
+    m_chartAutoFollow = true;
+    if (!m_customPlot)
+        return;
+    if (m_clickMarker)
+        m_clickMarker->setVisible(false);
+    for (int i = 0; i < m_customPlot->graphCount(); ++i) {
+        if (m_customPlot->graph(i))
+            m_customPlot->graph(i)->data()->clear();
+    }
+    m_customPlot->replot(QCustomPlot::rpQueuedReplot);
+}
+
+void MainWindow::renderRawChart()
+{
+    if (!m_customPlot)
+        return;
+    const int n = m_plotCache.size();
+    if (n <= 0)
+        return;
+
+    ensureGraphCount(1);
+    const int visibleCount = qMax(64, m_rawFixedDisplayCount);
+    QVector<double> x(n), y(n);
+    for (int i = 0; i < n; ++i) {
+        x[i] = i;
+        y[i] = m_plotCache[i];
+    }
+    m_customPlot->graph(0)->setData(x, y, true);
+    for (int i = 1; i < m_customPlot->graphCount(); ++i)
+        m_customPlot->graph(i)->data()->clear();
+    m_customPlot->legend->setVisible(false);
+    m_customPlot->graph(0)->setName(QStringLiteral("Raw/Preproc"));
+    m_customPlot->graph(0)->setPen(QPen(QColor(0, 210, 170), 1));
+    m_customPlot->xAxis->setLabel(QStringLiteral("Sample"));
+    m_customPlot->yAxis->setLabel(QStringLiteral("uV"));
+
+    // Y 轴按当前窗口数据自适应，保证负半轴也能完整看到波形。
+    double yMin = -1.0;
+    double yMax = 1.0;
+    if (!y.isEmpty()) {
+        const auto mm = std::minmax_element(y.cbegin(), y.cend());
+        yMin = *mm.first;
+        yMax = *mm.second;
+    }
+    const double maxAbs = qMax(qAbs(yMin), qAbs(yMax));
+    const double baseAbs = qBound(5.0, maxAbs * 1.15, 200.0);
+    m_updatingPlotRange = true;
+    m_customPlot->yAxis->setRange(-baseAbs, baseAbs);
+    m_updatingPlotRange = false;
+
+    if (m_chartAutoFollow) {
+        const int end = n;
+        m_updatingPlotRange = true;
+        m_customPlot->xAxis->setRange(qMax(0, end - visibleCount), qMax(visibleCount, end));
+        m_updatingPlotRange = false;
+    }
+    m_customPlot->replot(QCustomPlot::rpQueuedReplot);
+}
+
+void MainWindow::renderFftChart()
+{
+    if (!m_customPlot)
+        return;
+    const int n = m_fftCache.size();
+    if (n <= 0)
+        return;
+    ensureGraphCount(5);
+    QVector<double> x(n), d(n), t(n), a(n), b(n), g(n);
+    for (int i = 0; i < n; ++i) {
+        x[i] = i;
+        d[i] = m_fftCache[i].delta;
+        t[i] = m_fftCache[i].theta;
+        a[i] = m_fftCache[i].alpha;
+        b[i] = m_fftCache[i].beta;
+        g[i] = m_fftCache[i].gamma;
+    }
+    m_customPlot->graph(0)->setData(x, d, true);
+    m_customPlot->graph(1)->setData(x, t, true);
+    m_customPlot->graph(2)->setData(x, a, true);
+    m_customPlot->graph(3)->setData(x, b, true);
+    m_customPlot->graph(4)->setData(x, g, true);
+    m_customPlot->graph(0)->setName(QStringLiteral("δ Delta"));
+    m_customPlot->graph(1)->setName(QStringLiteral("θ Theta"));
+    m_customPlot->graph(2)->setName(QStringLiteral("α Alpha"));
+    m_customPlot->graph(3)->setName(QStringLiteral("β Beta"));
+    m_customPlot->graph(4)->setName(QStringLiteral("γ Gamma"));
+    m_customPlot->graph(0)->setPen(QPen(QColor(93, 173, 226), 2));   // 蓝
+    m_customPlot->graph(1)->setPen(QPen(QColor(88, 214, 141), 2));   // 绿
+    m_customPlot->graph(2)->setPen(QPen(QColor(245, 176, 65), 2));   // 橙
+    m_customPlot->graph(3)->setPen(QPen(QColor(236, 112, 99), 2));   // 红
+    m_customPlot->graph(4)->setPen(QPen(QColor(175, 122, 197), 2));  // 紫
+    m_customPlot->legend->setVisible(true);
+    m_customPlot->legend->setBrush(QColor(20, 24, 31, 180));
+    m_customPlot->legend->setBorderPen(QPen(QColor(80, 90, 110)));
+    m_customPlot->legend->setTextColor(QColor(220, 230, 245));
+    m_customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop | Qt::AlignRight);
+    m_customPlot->xAxis->setLabel(QStringLiteral("Window Index"));
+    m_customPlot->yAxis->setLabel(QStringLiteral("FFT Amp"));
+    if (m_chartAutoFollow) {
+        const int visibleCount = qMin(m_featureCacheMax, 120);
+        m_updatingPlotRange = true;
+        m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+        m_updatingPlotRange = false;
+    } else {
+        // 手动回看模式下，如果当前可视区已经不覆盖 FFT 数据，则自动拉回可视范围。
+        const auto xr = m_customPlot->xAxis->range();
+        if (xr.upper < 0 || xr.lower > n) {
+            const int visibleCount = qMin(m_featureCacheMax, 120);
+            m_updatingPlotRange = true;
+            m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+            m_updatingPlotRange = false;
+        }
+    }
+    auto minMax = std::minmax_element(d.cbegin(), d.cend());
+    double yMin = *minMax.first, yMax = *minMax.second;
+    auto updateRange = [&yMin, &yMax](const QVector<double> &v){
+        if (v.isEmpty()) return;
+        const auto mm = std::minmax_element(v.cbegin(), v.cend());
+        yMin = qMin(yMin, *mm.first);
+        yMax = qMax(yMax, *mm.second);
+    };
+    updateRange(t); updateRange(a); updateRange(b); updateRange(g);
+    if (yMax - yMin < 0.5) {
+        yMax += 0.25;
+        yMin -= 0.25;
+    }
+    const double pad = (yMax - yMin) * 0.15;
+    m_customPlot->yAxis->setRange(yMin - pad, yMax + pad);
+    m_customPlot->replot(QCustomPlot::rpQueuedReplot);
+}
+
+void MainWindow::renderBandPowerChart()
+{
+    if (!m_customPlot)
+        return;
+    const int n = m_psdCache.size();
+    if (n <= 0)
+        return;
+    ensureGraphCount(5);
+    QVector<double> x(n), d(n), t(n), a(n), b(n), g(n);
+    for (int i = 0; i < n; ++i) {
+        x[i] = i;
+        d[i] = m_psdCache[i].delta;
+        t[i] = m_psdCache[i].theta;
+        a[i] = m_psdCache[i].alpha;
+        b[i] = m_psdCache[i].beta;
+        g[i] = m_psdCache[i].gamma;
+    }
+    m_customPlot->graph(0)->setData(x, d, true);
+    m_customPlot->graph(1)->setData(x, t, true);
+    m_customPlot->graph(2)->setData(x, a, true);
+    m_customPlot->graph(3)->setData(x, b, true);
+    m_customPlot->graph(4)->setData(x, g, true);
+    m_customPlot->graph(0)->setName(QStringLiteral("δ Delta"));
+    m_customPlot->graph(1)->setName(QStringLiteral("θ Theta"));
+    m_customPlot->graph(2)->setName(QStringLiteral("α Alpha"));
+    m_customPlot->graph(3)->setName(QStringLiteral("β Beta"));
+    m_customPlot->graph(4)->setName(QStringLiteral("γ Gamma"));
+    m_customPlot->graph(0)->setPen(QPen(QColor(52, 152, 219), 2));   // 蓝
+    m_customPlot->graph(1)->setPen(QPen(QColor(46, 204, 113), 2));   // 绿
+    m_customPlot->graph(2)->setPen(QPen(QColor(241, 196, 15), 2));   // 黄
+    m_customPlot->graph(3)->setPen(QPen(QColor(231, 76, 60), 2));    // 红
+    m_customPlot->graph(4)->setPen(QPen(QColor(155, 89, 182), 2));   // 紫
+    m_customPlot->legend->setVisible(true);
+    m_customPlot->legend->setBrush(QColor(20, 24, 31, 180));
+    m_customPlot->legend->setBorderPen(QPen(QColor(80, 90, 110)));
+    m_customPlot->legend->setTextColor(QColor(220, 230, 245));
+    m_customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop | Qt::AlignRight);
+    m_customPlot->xAxis->setLabel(QStringLiteral("Window Index"));
+    m_customPlot->yAxis->setLabel(QStringLiteral("Band Power"));
+    if (m_chartAutoFollow) {
+        const int visibleCount = qMin(m_featureCacheMax, 120);
+        m_updatingPlotRange = true;
+        m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+        m_updatingPlotRange = false;
+    } else {
+        // 手动回看模式下，如果当前可视区已经不覆盖 BandPower 数据，则自动拉回可视范围。
+        const auto xr = m_customPlot->xAxis->range();
+        if (xr.upper < 0 || xr.lower > n) {
+            const int visibleCount = qMin(m_featureCacheMax, 120);
+            m_updatingPlotRange = true;
+            m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+            m_updatingPlotRange = false;
+        }
+    }
+    auto minMax = std::minmax_element(d.cbegin(), d.cend());
+    double yMin = *minMax.first, yMax = *minMax.second;
+    auto updateRange = [&yMin, &yMax](const QVector<double> &v){
+        if (v.isEmpty()) return;
+        const auto mm = std::minmax_element(v.cbegin(), v.cend());
+        yMin = qMin(yMin, *mm.first);
+        yMax = qMax(yMax, *mm.second);
+    };
+    updateRange(t); updateRange(a); updateRange(b); updateRange(g);
+    if (yMax - yMin < 0.5) {
+        yMax += 0.25;
+        yMin -= 0.25;
+    }
+    const double pad = (yMax - yMin) * 0.15;
+    m_customPlot->yAxis->setRange(yMin - pad, yMax + pad);
+    m_customPlot->replot(QCustomPlot::rpQueuedReplot);
 }
 
 

@@ -46,6 +46,7 @@ public:
     QSpacerItem *verticalSpacer_6;
     QPushButton *pushButton_serialConfig;
     QSpacerItem *verticalSpacer;
+    QPushButton *pushButton_picture;
     QVBoxLayout *verticalLayoutRight;
     QFrame *framePlot;
     QVBoxLayout *verticalLayoutPlot;
@@ -136,6 +137,11 @@ public:
 
         verticalLayoutControl->addItem(verticalSpacer);
 
+        pushButton_picture = new QPushButton(frameControl);
+        pushButton_picture->setObjectName("pushButton_picture");
+
+        verticalLayoutControl->addWidget(pushButton_picture);
+
 
         horizontalLayout->addWidget(frameControl);
 
@@ -203,6 +209,7 @@ public:
         pushButton_clear->setText(QCoreApplication::translate("MainWindow", "\346\270\205\351\231\244", nullptr));
         pushButton_save->setText(QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230", nullptr));
         pushButton_serialConfig->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\350\256\276\347\275\256", nullptr));
+        pushButton_picture->setText(QCoreApplication::translate("MainWindow", "\346\233\264\346\215\242\345\233\276\350\241\250", nullptr));
         menu->setTitle(QCoreApplication::translate("MainWindow", "\345\215\225\351\200\232\351\201\223\350\256\276\345\244\207\346\216\247\345\210\266\345\231\250", nullptr));
     } // retranslateUi
 

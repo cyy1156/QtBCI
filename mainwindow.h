@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QTimer>
 #include <QPlainTextEdit>
+#include <QPointF>
 #include "QCustomPlot/qcustomplot.h"
 #include<thinkgear/thinkgearlinktester.h>
 #include<QFile>
@@ -36,6 +37,7 @@ private slots:
     void onSecondReport(quint64 secIndex, int rawPerSec, int framePerSec, int warnPerSec, bool pass);
     void onTestMessage(const QString &msg);
     void onPlotRefreshTick();
+    void on_pushButton_picture_clicked();
 
 private:
     void setupTesterConnections();
@@ -71,6 +73,13 @@ private:
     void loadSerialSettings();
     void saveSerialSettings();
     bool showSerialConfigDialog();
+    bool showChartModeDialog();
+    void ensureGraphCount(int count);
+    void clearPlotDisplay();
+    void setupPlotInteractions();
+    void renderRawChart();
+    void renderFftChart();
+    void renderBandPowerChart();
 public:
     void restartSessionWithReset(const QString &port, qint32 baud);
 
@@ -85,11 +94,41 @@ public:
     CsvLogWorker *m_csvWorker = nullptr;
 
     LogBuffer m_logBuffer{8192};
+    enum class ChartMode {
+        RawTime = 0,
+        FftSpectrum = 1,
+        BandPower = 2
+    };
+    struct FftBandPoint {
+        double delta = 0.0;
+        double theta = 0.0;
+        double alpha = 0.0;
+        double beta = 0.0;
+        double gamma = 0.0;
+        quint64 seqEnd = 0;
+    };
+    struct PsdBandPoint {
+        double delta = 0.0;
+        double theta = 0.0;
+        double alpha = 0.0;
+        double beta = 0.0;
+        double gamma = 0.0;
+        quint64 seqEnd = 0;
+    };
+
+    ChartMode m_chartMode = ChartMode::RawTime;
     QVector<double> m_plotCache;
-    int m_plotCacheMax = 4096;
+    QVector<FftBandPoint> m_fftCache;
+    QVector<PsdBandPoint> m_psdCache;
+    int m_plotCacheMax = 20000;
+    int m_rawFixedDisplayCount = 600;
+    int m_featureCacheMax = 512;
     QTimer m_plotUiTimer;
     bool m_plotDirty = false;
+    bool m_chartAutoFollow = true;
+    bool m_updatingPlotRange = false;
     QCustomPlot *m_customPlot = nullptr;
+    QCPItemTracer *m_clickMarker = nullptr;
     QPlainTextEdit *m_logText = nullptr;
     QPushButton *m_btnClearLog = nullptr;
     QPushButton *m_btnPauseAutoScroll = nullptr;

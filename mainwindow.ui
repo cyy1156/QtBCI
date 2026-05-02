@@ -183,6 +183,13 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_picture">
+         <property name="text">
+          <string>更换图表</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
