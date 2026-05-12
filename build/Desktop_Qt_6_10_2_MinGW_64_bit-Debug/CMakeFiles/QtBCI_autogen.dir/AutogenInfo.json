@@ -287,6 +287,36 @@
 		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportAdditionalTargetInfo.cmake",
 		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportPlugins.cmake",
 		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportVersionlessAliasTargets.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersion.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake",
+		"D:/qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkDependencies.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkTargets-relwithdebinfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkPlugins.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginConfig.cmake",
+		"D:/qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets-relwithdebinfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginAdditionalTargetInfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginConfig.cmake",
+		"D:/qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets-relwithdebinfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginAdditionalTargetInfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginConfig.cmake",
+		"D:/qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets-relwithdebinfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginAdditionalTargetInfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginConfig.cmake",
+		"D:/qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets-relwithdebinfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginAdditionalTargetInfo.cmake",
+		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkVersionlessAliasTargets.cmake",
 		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6/Qt6ConfigVersion.cmake",
 		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake",
 		"D:/qt/6.10.2/mingw_64/lib/cmake/Qt6/Qt6Config.cmake",
@@ -344,9 +374,33 @@
 	"HEADERS" : 
 	[
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.h",
+			"MU",
+			"MGXC7XM3NX/moc_networkconfigdialog.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.h",
+			"MU",
+			"MGXC7XM3NX/moc_networkstreamsettings.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.h",
+			"MU",
+			"MGXC7XM3NX/moc_udptelemetryhub.cpp",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.h",
 			"MU",
 			"WYEPPNPBOE/moc_qcustomplot.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.h",
+			"MU",
+			"EWIEGA46WW/moc_chartmodedialog.cpp",
 			null
 		],
 		[
@@ -368,6 +422,12 @@
 			null
 		],
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/fftfeatureextractor.h",
+			"MU",
+			"TAC5DWH4SE/moc_fftfeatureextractor.cpp",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/logwbuffer.h",
 			"MU",
 			"TAC5DWH4SE/moc_logwbuffer.cpp",
@@ -377,6 +437,12 @@
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.h",
 			"MU",
 			"TAC5DWH4SE/moc_pictureandalgbuffer.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.h",
+			"MU",
+			"TAC5DWH4SE/moc_psdfeatureextractor.cpp",
 			null
 		],
 		[
@@ -401,6 +467,18 @@
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.h",
 			"MU",
 			"KNVE43EE3J/moc_eeg_preprocess_pipeline.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.h",
+			"MU",
+			"EWIEGA46WW/moc_saveconfigdialog.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.h",
+			"MU",
+			"EWIEGA46WW/moc_serialconfigdialog.cpp",
 			null
 		],
 		[
@@ -467,6 +545,7 @@
 		"QT_CORE_LIB",
 		"QT_GUI_LIB",
 		"QT_NEEDS_QMAIN",
+		"QT_NETWORK_LIB",
 		"QT_PRINTSUPPORT_LIB",
 		"QT_SERIALPORT_LIB",
 		"QT_WIDGETS_LIB",
@@ -498,6 +577,7 @@
 		"D:/qt/6.10.2/mingw_64/include/QtGui",
 		"D:/qt/6.10.2/mingw_64/include/QtSerialPort",
 		"D:/qt/6.10.2/mingw_64/include/QtPrintSupport",
+		"D:/qt/6.10.2/mingw_64/include/QtNetwork",
 		"D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++",
 		"D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32",
 		"D:/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward",
@@ -539,7 +619,27 @@
 	"SOURCES" : 
 	[
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.cpp",
+			"MU",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.cpp",
 			"MU",
 			null
 		],
@@ -559,12 +659,22 @@
 			null
 		],
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/fftfeatureextractor.cpp",
+			"MU",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/logwbuffer.cpp",
 			"MU",
 			null
 		],
 		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.cpp",
 			"MU",
 			null
 		],
@@ -590,6 +700,16 @@
 		],
 		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.cpp",
 			"MU",
 			null
 		],

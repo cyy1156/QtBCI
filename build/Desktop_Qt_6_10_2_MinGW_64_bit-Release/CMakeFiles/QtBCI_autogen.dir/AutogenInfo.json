@@ -374,9 +374,21 @@
 	"HEADERS" : 
 	[
 		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.h",
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.h",
 			"MU",
-			"MGXC7XM3NX/moc_preprocchunkudpsender.cpp",
+			"MGXC7XM3NX/moc_networkconfigdialog.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.h",
+			"MU",
+			"MGXC7XM3NX/moc_networkstreamsettings.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.h",
+			"MU",
+			"MGXC7XM3NX/moc_udptelemetryhub.cpp",
 			null
 		],
 		[
@@ -590,7 +602,17 @@
 	"SOURCES" : 
 	[
 		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.cpp",
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.cpp",
 			"MU",
 			null
 		],

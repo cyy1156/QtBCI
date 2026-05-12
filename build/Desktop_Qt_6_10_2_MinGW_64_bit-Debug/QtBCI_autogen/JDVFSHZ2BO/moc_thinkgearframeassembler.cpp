@@ -42,6 +42,9 @@ template <> constexpr inline auto ThinkGearFrameAssembler::qt_create_metaobjectd
         "frameReady",
         "",
         "frame",
+        "checksumFailureOccurred",
+        "totalSoFar",
+        "lengthResyncOccurred",
         "rxBufferOverflowed",
         "previousSize",
         "onBytes"
@@ -52,12 +55,20 @@ template <> constexpr inline auto ThinkGearFrameAssembler::qt_create_metaobjectd
         QtMocHelpers::SignalData<void(const QByteArray &)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QByteArray, 3 },
         }}),
+        // Signal 'checksumFailureOccurred'
+        QtMocHelpers::SignalData<void(quint64)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::ULongLong, 5 },
+        }}),
+        // Signal 'lengthResyncOccurred'
+        QtMocHelpers::SignalData<void(quint64)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::ULongLong, 5 },
+        }}),
         // Signal 'rxBufferOverflowed'
-        QtMocHelpers::SignalData<void(int)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Int, 5 },
+        QtMocHelpers::SignalData<void(int)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 8 },
         }}),
         // Slot 'onBytes'
-        QtMocHelpers::SlotData<void(const QByteArray &)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
+        QtMocHelpers::SlotData<void(const QByteArray &)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QByteArray, 3 },
         }}),
     };
@@ -84,15 +95,21 @@ void ThinkGearFrameAssembler::qt_static_metacall(QObject *_o, QMetaObject::Call 
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->frameReady((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
-        case 1: _t->rxBufferOverflowed((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 2: _t->onBytes((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
+        case 1: _t->checksumFailureOccurred((*reinterpret_cast<std::add_pointer_t<quint64>>(_a[1]))); break;
+        case 2: _t->lengthResyncOccurred((*reinterpret_cast<std::add_pointer_t<quint64>>(_a[1]))); break;
+        case 3: _t->rxBufferOverflowed((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 4: _t->onBytes((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
         default: ;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (ThinkGearFrameAssembler::*)(const QByteArray & )>(_a, &ThinkGearFrameAssembler::frameReady, 0))
             return;
-        if (QtMocHelpers::indexOfMethod<void (ThinkGearFrameAssembler::*)(int )>(_a, &ThinkGearFrameAssembler::rxBufferOverflowed, 1))
+        if (QtMocHelpers::indexOfMethod<void (ThinkGearFrameAssembler::*)(quint64 )>(_a, &ThinkGearFrameAssembler::checksumFailureOccurred, 1))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (ThinkGearFrameAssembler::*)(quint64 )>(_a, &ThinkGearFrameAssembler::lengthResyncOccurred, 2))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (ThinkGearFrameAssembler::*)(int )>(_a, &ThinkGearFrameAssembler::rxBufferOverflowed, 3))
             return;
     }
 }
@@ -116,14 +133,14 @@ int ThinkGearFrameAssembler::qt_metacall(QMetaObject::Call _c, int _id, void **_
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 5;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 5)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 3;
+        _id -= 5;
     }
     return _id;
 }
@@ -135,8 +152,20 @@ void ThinkGearFrameAssembler::frameReady(const QByteArray & _t1)
 }
 
 // SIGNAL 1
-void ThinkGearFrameAssembler::rxBufferOverflowed(int _t1)
+void ThinkGearFrameAssembler::checksumFailureOccurred(quint64 _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
+}
+
+// SIGNAL 2
+void ThinkGearFrameAssembler::lengthResyncOccurred(quint64 _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
+}
+
+// SIGNAL 3
+void ThinkGearFrameAssembler::rxBufferOverflowed(int _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1);
 }
 QT_WARNING_POP

@@ -2,6 +2,8 @@
 
 本文说明：**在已跑通 [UDP本地回环测试接入指南](./UDP本地回环测试接入指南.md)（PBC1 格式、`UDP_Test.py` 收包）的前提下**，如何把每一包里的预处理向量 `y` 接到 **`model/`** 里基于 **`online_infer.py` + EEGNet checkpoint** 的推理流程。  
 
+QtBCI **网络设置**（v0.2 起）将 **PBC1 预处理流** 发往 **`network/port_preproc`（默认 50001）**；Python 监听端口须与 Qt 中 **「预处理 PBC1 端口」** 一致（FFT/PSD 为另两个端口，推理脚本可忽略）。
+
 **本文只给写法与对齐要点，不要求你改 Qt 工程；Python 侧你可新建独立脚本（例如 `model/udp_model_infer.py`）自行粘贴组合。**
 
 ---
@@ -16,11 +18,11 @@
 
 **核心矛盾（你必须二选一或重新训练）：**
 
-1. **预处理是否重复**  
-   - UDP 里已是「Qt 预处理后的曲线」。  
-   - `utils/preprocessing.py` 里的 **`EEGPreprocessor.transform_window`** 默认还会做占位滤波 + 可选 **逐窗 z-score**（见 `raw_window_zscore`）。  
-   - 若训练时用的是「原始 µV → Python 预处理」，则 **UDP 路径不应再套同一套 Python 预处理**，否则分布与训练不一致。  
-   - 若你**有意**用 Qt 完全复现训练链路上的最后一步，应在 checkpoint 的 `config["preprocessing"]` 里核对是否启用 z-score，并与 Qt 侧约定「只做一次」。
+1. **两路「预处理」目的不同，但 Python 侧不只有「改格式」**  
+   - **Qt（`EegPreprocessPipeline`）**：面向**原始采样流**，做滤波、单位/幅值语义、伪迹标记等，得到 **「可画、可判、可发 UDP」** 的时域窗 `y`。这是 **信号链路上的预处理**。  
+   - **Python（`EEGPreprocessor.transform_window`）**：面向**训练脚本与 checkpoint 约定的输入张量**，除类型与 shape 对齐外，还可能包含 **逐窗 z-score（`raw_window_zscore`）** 等——这会改变**数值分布**，不只是「把 `double` 转成 `float32`」这类纯格式处理。可把它理解为 **与训练时同一套「张量级」处理链**（其中是否含占位滤波等以 `config` 为准）。  
+   - 若训练数据是 **「原始 µV → 在 Python 里完整走 `transform_window`」**，而 UDP 里已是 **Qt 处理后的曲线**，则在线侧 **不应再盲目套同一套 `transform_window`**（尤其避免 **z-score 做两次**），否则与训练分布不一致。  
+   - 若你确认 Qt 输出在语义上 **已等价于** 训练时 `transform_window` **之后** 的张量，则 Python 侧应 **跳过或关闭 z-score**，只做必要的 dtype/shape，并与 checkpoint 的 `config["preprocessing"]` 逐项核对。
 
 2. **通道数与窗口长度必须和 checkpoint 一致**  
    - `eegnet.py` 期望输入 **`[batch, 1, n_channels, n_samples]`**（见类注释）。  

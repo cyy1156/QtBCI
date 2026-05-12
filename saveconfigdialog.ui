@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SaveConfigDialog</class>
+ <widget class="QDialog" name="SaveConfigDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>560</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>520</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>保存配置</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="checkEnableCsv">
+     <property name="text">
+      <string>开始采集时启用 EEG CSV 保存</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkEnableUiTxt">
+     <property name="text">
+      <string>启用操作日志 TXT 保存</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkEnablePsd">
+     <property name="text">
+      <string>开始采集时启用 经过Welch 非参数功率谱估计(PSD)算法保存</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkEnableFft">
+     <property name="text">
+      <string>开始采集时启用 FFT 频谱（五频段幅值）CSV 保存</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelEegPath">
+     <property name="text">
+      <string>EEG CSV：</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutEeg">
+     <item>
+      <widget class="QPushButton" name="btnNewEeg">
+       <property name="text">
+        <string>新建 EEG CSV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnOpenEeg">
+       <property name="text">
+        <string>打开 EEG CSV</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelTxtPath">
+     <property name="text">
+      <string>操作 TXT：</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutTxt">
+     <item>
+      <widget class="QPushButton" name="btnNewTxt">
+       <property name="text">
+        <string>新建 操作TXT</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnOpenTxt">
+       <property name="text">
+        <string>打开 操作TXT</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelPsdPath">
+     <property name="text">
+      <string>PSD CSV：</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutPsd">
+     <item>
+      <widget class="QPushButton" name="btnNewPsd">
+       <property name="text">
+        <string>新建 PSD CSV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnOpenPsd">
+       <property name="text">
+        <string>打开 PSD CSV</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelFftPath">
+     <property name="text">
+      <string>FFT CSV：</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutFft">
+     <item>
+      <widget class="QPushButton" name="btnNewFft">
+       <property name="text">
+        <string>新建 FFT CSV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnOpenFft">
+       <property name="text">
+        <string>打开 FFT CSV</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btnSerialCfg">
+     <property name="text">
+      <string>串口配置...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>SaveConfigDialog</receiver>
+   <slot>accept()</slot>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SaveConfigDialog</receiver>
+   <slot>reject()</slot>
+  </connection>
+ </connections>
+</ui>

@@ -1,6 +1,7 @@
 D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI_autogen/EWIEGA46WW/moc_mainwindow.cpp: D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI_autogen/moc_predefs.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.h \

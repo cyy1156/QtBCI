@@ -12,7 +12,8 @@
 #include<QTextStream>
 #include<core/acquisitionengine.h>
 #include<core/algorithmengine.h>
-#include<Net/preprocchunkudpsender.h>
+#include<Net/udptelemetryhub.h>
+#include<Net/networkstreamsettings.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -75,6 +76,8 @@ private:
     void loadSerialSettings();
     void saveSerialSettings();
     bool showSerialConfigDialog();
+    void showNetworkConfigDialog();
+    void applyNetworkStreamToHub();
     bool showChartModeDialog();
     void ensureGraphCount(int count);
     void clearPlotDisplay();
@@ -145,6 +148,7 @@ public:
     int m_logDropWatermark = 0;
     SerialPortConfig m_serialCfg;
 
-    PreprocChunkUdpSender *m_preprocUdp =nullptr;
+    NetworkStreamSettings m_netSettings;
+    UdpTelemetryHub *m_udpHub = nullptr;
 };
 #endif // MAINWINDOW_H

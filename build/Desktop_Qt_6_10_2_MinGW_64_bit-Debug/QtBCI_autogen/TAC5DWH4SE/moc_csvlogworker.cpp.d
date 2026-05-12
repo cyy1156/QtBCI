@@ -1,10 +1,14 @@
 D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/TAC5DWH4SE/moc_csvlogworker.cpp: D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/csvlogworker.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/moc_predefs.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/QFile \
+  D:/qt/6.10.2/mingw_64/include/QtCore/QMap \
   D:/qt/6.10.2/mingw_64/include/QtCore/QObject \
+  D:/qt/6.10.2/mingw_64/include/QtCore/QSet \
   D:/qt/6.10.2/mingw_64/include/QtCore/QString \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTextStream \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTimer \
+  D:/qt/6.10.2/mingw_64/include/QtCore/QVector \
   D:/qt/6.10.2/mingw_64/include/QtCore/q17memory.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/q20functional.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/q20iterator.h \
@@ -52,6 +56,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/qgenericatomic.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qglobal.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qglobalstatic.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qhash.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qhashfunctions.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qiodevice.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qiodevicebase.h \
@@ -61,6 +66,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/qlist.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qlogging.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qmalloc.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qmap.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qmath.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qmetacontainer.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qmetatype.h \
@@ -77,6 +83,9 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/qrefcount.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qscopedpointer.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qscopeguard.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qset.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qshareddata.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qshareddata_impl.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qspan.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qstdlibdetection.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qstring.h \
@@ -116,6 +125,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/qtypeinfo.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qtypes.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qutf8stringview.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qvector.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qversiontagging.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qxptype_traits.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qyieldcpu.h \

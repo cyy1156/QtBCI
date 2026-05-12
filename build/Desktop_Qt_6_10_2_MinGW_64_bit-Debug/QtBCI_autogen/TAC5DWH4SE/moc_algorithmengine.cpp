@@ -46,11 +46,18 @@ template <> constexpr inline auto AlgorithmEngine::qt_create_metaobjectdata<qt_m
         "algoResultReady",
         "AlgoResult",
         "res",
+        "spectrumReady",
+        "SpectrumResult",
+        "fftResultReady",
+        "FftResult",
         "onRawPacket",
         "RawPacket",
         "pkt",
         "setWindowSize",
-        "n"
+        "n",
+        "setRunning",
+        "running",
+        "resetState"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -62,14 +69,28 @@ template <> constexpr inline auto AlgorithmEngine::qt_create_metaobjectdata<qt_m
         QtMocHelpers::SignalData<void(const AlgoResult &)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 6, 7 },
         }}),
+        // Signal 'spectrumReady'
+        QtMocHelpers::SignalData<void(const SpectrumResult &)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 9, 7 },
+        }}),
+        // Signal 'fftResultReady'
+        QtMocHelpers::SignalData<void(const FftResult &)>(10, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 11, 7 },
+        }}),
         // Slot 'onRawPacket'
-        QtMocHelpers::SlotData<void(const RawPacket &)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 9, 10 },
+        QtMocHelpers::SlotData<void(const RawPacket &)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 13, 14 },
         }}),
         // Slot 'setWindowSize'
-        QtMocHelpers::SlotData<void(int)>(11, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Int, 12 },
+        QtMocHelpers::SlotData<void(int)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 16 },
         }}),
+        // Slot 'setRunning'
+        QtMocHelpers::SlotData<void(bool)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 18 },
+        }}),
+        // Slot 'resetState'
+        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -95,8 +116,12 @@ void AlgorithmEngine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         switch (_id) {
         case 0: _t->plotChunkReady((*reinterpret_cast<std::add_pointer_t<PlotChunk>>(_a[1]))); break;
         case 1: _t->algoResultReady((*reinterpret_cast<std::add_pointer_t<AlgoResult>>(_a[1]))); break;
-        case 2: _t->onRawPacket((*reinterpret_cast<std::add_pointer_t<RawPacket>>(_a[1]))); break;
-        case 3: _t->setWindowSize((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 2: _t->spectrumReady((*reinterpret_cast<std::add_pointer_t<SpectrumResult>>(_a[1]))); break;
+        case 3: _t->fftResultReady((*reinterpret_cast<std::add_pointer_t<FftResult>>(_a[1]))); break;
+        case 4: _t->onRawPacket((*reinterpret_cast<std::add_pointer_t<RawPacket>>(_a[1]))); break;
+        case 5: _t->setWindowSize((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 6: _t->setRunning((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
+        case 7: _t->resetState(); break;
         default: ;
         }
     }
@@ -121,6 +146,20 @@ void AlgorithmEngine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< SpectrumResult >(); break;
+            }
+            break;
+        case 3:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< FftResult >(); break;
+            }
+            break;
+        case 4:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< RawPacket >(); break;
             }
             break;
@@ -130,6 +169,10 @@ void AlgorithmEngine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         if (QtMocHelpers::indexOfMethod<void (AlgorithmEngine::*)(const PlotChunk & )>(_a, &AlgorithmEngine::plotChunkReady, 0))
             return;
         if (QtMocHelpers::indexOfMethod<void (AlgorithmEngine::*)(const AlgoResult & )>(_a, &AlgorithmEngine::algoResultReady, 1))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (AlgorithmEngine::*)(const SpectrumResult & )>(_a, &AlgorithmEngine::spectrumReady, 2))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (AlgorithmEngine::*)(const FftResult & )>(_a, &AlgorithmEngine::fftResultReady, 3))
             return;
     }
 }
@@ -153,14 +196,14 @@ int AlgorithmEngine::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 8;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 8;
     }
     return _id;
 }
@@ -175,5 +218,17 @@ void AlgorithmEngine::plotChunkReady(const PlotChunk & _t1)
 void AlgorithmEngine::algoResultReady(const AlgoResult & _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
+}
+
+// SIGNAL 2
+void AlgorithmEngine::spectrumReady(const SpectrumResult & _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
+}
+
+// SIGNAL 3
+void AlgorithmEngine::fftResultReady(const FftResult & _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1);
 }
 QT_WARNING_POP

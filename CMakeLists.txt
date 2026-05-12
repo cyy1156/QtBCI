@@ -15,6 +15,9 @@ qt_add_executable(QtBCI
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    chartmodedialog.h chartmodedialog.cpp chartmodedialog.ui
+    serialconfigdialog.h serialconfigdialog.cpp serialconfigdialog.ui
+    saveconfigdialog.h saveconfigdialog.cpp saveconfigdialog.ui
     thinkgear/thinkgear.h
 
     core/pictureandalgbuffer.h core/pictureandalgbuffer.cpp
@@ -36,7 +39,10 @@ qt_add_executable(QtBCI
     preprocessing/eeg_preprocess_pipeline.h preprocessing/eeg_preprocess_pipeline.cpp
     core/psdfeatureextractor.h core/psdfeatureextractor.cpp
     core/fftfeatureextractor.h core/fftfeatureextractor.cpp
-    Net/preprocchunkudpsender.h Net/preprocchunkudpsender.cpp
+    Net/networkstreamsettings.h Net/networkstreamsettings.cpp
+    Net/udptelemetryhub.h Net/udptelemetryhub.cpp
+    Net/networkconfigdialog.h Net/networkconfigdialog.cpp
+    Net/networkconfigdialog.ui
 
 
 )

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NetworkConfigDialog</class>
+ <widget class="QDialog" name="NetworkConfigDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>520</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>网络设置</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupProtocol">
+     <property name="title">
+      <string>传输协议</string>
+     </property>
+     <layout class="QFormLayout" name="formLayoutProtocol">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelProtocol">
+        <property name="text">
+         <string>协议</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboProtocol"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupTarget">
+     <property name="title">
+      <string>目标地址（UDP，三流各端口）</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayoutTarget">
+      <item>
+       <layout class="QFormLayout" name="formLayoutTarget">
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelHost">
+          <property name="text">
+           <string>IPv4 主机</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineHost"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelPortPreproc">
+          <property name="text">
+           <string>预处理 PBC1 端口</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="spinPortPreproc">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+          <property name="value">
+           <number>50001</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelPortFft">
+          <property name="text">
+           <string>FFT 特征 PBF1 端口</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="spinPortFft">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+          <property name="value">
+           <number>50002</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelPortPsd">
+          <property name="text">
+           <string>PSD 特征 PBP1 端口</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="spinPortPsd">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+          <property name="value">
+           <number>50003</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelPortDuplicateHint">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupStreams">
+     <property name="title">
+      <string>发送的数据</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayoutStreams">
+      <item>
+       <widget class="QCheckBox" name="checkEnableNetwork">
+        <property name="text">
+         <string>启用网络发送</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkSendPreproc">
+        <property name="text">
+         <string>预处理时域窗（PBC1，与 Python udp_infer_live 兼容）</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkSendFft">
+        <property name="text">
+         <string>频段功率（FFT 路径，PBF1）</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkSendPsd">
+        <property name="text">
+         <string>频段功率（PSD 路径，PBP1）</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelHint">
+        <property name="text">
+         <string>提示：FFT/PSD 为各频段标量特征，非全频谱曲线。三端口相同则退化为单端口混收，不推荐。</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>NetworkConfigDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>NetworkConfigDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

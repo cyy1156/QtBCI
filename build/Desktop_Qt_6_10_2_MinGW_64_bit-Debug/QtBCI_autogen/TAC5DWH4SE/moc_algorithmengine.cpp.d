@@ -1,7 +1,9 @@
 D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/TAC5DWH4SE/moc_algorithmengine.cpp: D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/moc_predefs.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/fftfeatureextractor.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.h \

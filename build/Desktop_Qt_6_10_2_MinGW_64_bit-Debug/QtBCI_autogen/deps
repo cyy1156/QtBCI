@@ -1,5 +1,11 @@
 QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/CMakeLists.txt \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qtc/package-manager/auto-setup.cmake \
@@ -8,16 +14,22 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/CMakeFiles/3.30.5/CMakeRCCompiler.cmake \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/CMakeFiles/3.30.5/CMakeSystem.cmake \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/moc_predefs.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/csvlogworker.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/csvlogworker.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/fftfeatureextractor.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/fftfeatureextractor.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/logwbuffer.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/logwbuffer.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/main.cpp \
@@ -27,6 +39,10 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/origintest.cpp \
@@ -71,6 +87,7 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QQueue \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QRect \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QScopedPointer \
+	D:/qt/6.10.2/mingw_64/include/QtCore/QSet \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QSharedPointer \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QSize \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QSizeF \
@@ -498,6 +515,14 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtGui/qwindowdefs.h \
 	D:/qt/6.10.2/mingw_64/include/QtGui/qwindowdefs_win.h \
 	D:/qt/6.10.2/mingw_64/include/QtGui/qwindowsmimeconverter.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/QHostAddress \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/QUdpSocket \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qabstractsocket.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qhostaddress.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qudpsocket.h \
 	D:/qt/6.10.2/mingw_64/include/QtPrintSupport/QtPrintSupport \
 	D:/qt/6.10.2/mingw_64/include/QtPrintSupport/QtPrintSupportDepends \
 	D:/qt/6.10.2/mingw_64/include/QtPrintSupport/qabstractprintdialog.h \
@@ -518,6 +543,7 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtSerialPort/qtserialportexports.h \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QApplication \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QCommonStyle \
+	D:/qt/6.10.2/mingw_64/include/QtWidgets/QDialog \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QLayout \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QMainWindow \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QPlainTextEdit \
@@ -777,6 +803,31 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersion.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkDependencies.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkPlugins.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkVersionlessAliasTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportAdditionalTargetInfo.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportConfig.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportConfigVersion.cmake \
@@ -1202,5 +1253,9 @@ QtBCI_autogen/timestamp: \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/vadefs.h \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wctype.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.ui \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.ui \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.ui \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.ui \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.ui \
 	D:/qt/Tools/CMake_64/bin/cmake.exe

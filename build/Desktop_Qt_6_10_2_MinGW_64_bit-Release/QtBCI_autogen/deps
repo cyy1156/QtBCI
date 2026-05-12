@@ -1,7 +1,11 @@
 QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/CMakeLists.txt \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/udptelemetryhub.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.qtc/package-manager/auto-setup.cmake \
@@ -533,6 +537,7 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtSerialPort/qtserialportexports.h \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QApplication \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QCommonStyle \
+	D:/qt/6.10.2/mingw_64/include/QtWidgets/QDialog \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QLayout \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QMainWindow \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QPlainTextEdit \
@@ -1242,5 +1247,6 @@ QtBCI_autogen/timestamp: \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/vadefs.h \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wctype.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.ui \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.ui \
 	D:/qt/Tools/CMake_64/bin/cmake.exe

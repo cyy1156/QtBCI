@@ -49,6 +49,22 @@ template <> constexpr inline auto CsvLogWorker::qt_create_metaobjectdata<qt_meta
         "droppedCount",
         "start",
         "stop",
+        "onSpectrumResult",
+        "SpectrumResult",
+        "sp",
+        "onFftResult",
+        "FftResult",
+        "fr",
+        "noteLossEventWallMs",
+        "wallMs",
+        "onAcquisitionStreamGap",
+        "missed",
+        "prevSeq",
+        "curSeq",
+        "eventWallMs",
+        "onAcquisitionLinkDiag",
+        "category",
+        "message",
         "onFlushTick"
     };
 
@@ -69,8 +85,28 @@ template <> constexpr inline auto CsvLogWorker::qt_create_metaobjectdata<qt_meta
         QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'stop'
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'onSpectrumResult'
+        QtMocHelpers::SlotData<void(const SpectrumResult &)>(11, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 12, 13 },
+        }}),
+        // Slot 'onFftResult'
+        QtMocHelpers::SlotData<void(const FftResult &)>(14, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 15, 16 },
+        }}),
+        // Slot 'noteLossEventWallMs'
+        QtMocHelpers::SlotData<void(qint64)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::LongLong, 18 },
+        }}),
+        // Slot 'onAcquisitionStreamGap'
+        QtMocHelpers::SlotData<void(quint64, quint64, quint64, qint64)>(19, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::ULongLong, 20 }, { QMetaType::ULongLong, 21 }, { QMetaType::ULongLong, 22 }, { QMetaType::LongLong, 23 },
+        }}),
+        // Slot 'onAcquisitionLinkDiag'
+        QtMocHelpers::SlotData<void(const QString &, const QString &, qint64)>(24, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 25 }, { QMetaType::QString, 26 }, { QMetaType::LongLong, 23 },
+        }}),
         // Slot 'onFlushTick'
-        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(27, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -99,7 +135,12 @@ void CsvLogWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 2: _t->drained((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[3]))); break;
         case 3: _t->start(); break;
         case 4: _t->stop(); break;
-        case 5: _t->onFlushTick(); break;
+        case 5: _t->onSpectrumResult((*reinterpret_cast<std::add_pointer_t<SpectrumResult>>(_a[1]))); break;
+        case 6: _t->onFftResult((*reinterpret_cast<std::add_pointer_t<FftResult>>(_a[1]))); break;
+        case 7: _t->noteLossEventWallMs((*reinterpret_cast<std::add_pointer_t<qint64>>(_a[1]))); break;
+        case 8: _t->onAcquisitionStreamGap((*reinterpret_cast<std::add_pointer_t<quint64>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<quint64>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<quint64>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<qint64>>(_a[4]))); break;
+        case 9: _t->onAcquisitionLinkDiag((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<qint64>>(_a[3]))); break;
+        case 10: _t->onFlushTick(); break;
         default: ;
         }
     }
@@ -132,14 +173,14 @@ int CsvLogWorker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 11;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 6;
+        _id -= 11;
     }
     return _id;
 }

@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Net/networkconfigdialog.h"
+#include "serialconfigdialog.h"
+#include "saveconfigdialog.h"
+#include "chartmodedialog.h"
 
 // 旧单链路对象（ThinkGearLinkTester）相关 include，注释保留
 // #include "thinkgear/thinkgearlinktester.h"
@@ -27,13 +31,10 @@
 #include <algorithm>
 #include <QHBoxLayout>
 #include <QScrollBar>
-#include <QSerialPortInfo>
 #include <QSettings>
 #include <QComboBox>
 #include <QFormLayout>
 #include <QAction>
-#include <QButtonGroup>
-#include <QRadioButton>
 #include <QToolTip>
 #include <QSharedPointer>
 
@@ -85,6 +86,11 @@ MainWindow::MainWindow(QWidget *parent)
             showSerialConfigDialog();
         });
         ui->menu->addAction(actSerial);
+        auto *actNet = new QAction(QStringLiteral("网络设置"), this);
+        connect(actNet, &QAction::triggered, this, [this]() {
+            showNetworkConfigDialog();
+        });
+        ui->menu->addAction(actNet);
     }
 
     // 控制面板四个按钮放大到约 1.5 倍
@@ -109,6 +115,8 @@ MainWindow::MainWindow(QWidget *parent)
     scaleButton(ui->pushButton_clear);
     scaleButton(ui->pushButton_save);
     scaleButton(ui->pushButton_serialConfig);
+    if (ui->pushButton_network)
+        scaleButton(ui->pushButton_network);
     if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_picture")))
         scaleButton(btn);
     if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_changeChart")))
@@ -116,6 +124,11 @@ MainWindow::MainWindow(QWidget *parent)
     if (ui->pushButton_serialConfig) {
         connect(ui->pushButton_serialConfig, &QPushButton::clicked, this, [this]() {
             showSerialConfigDialog();
+        });
+    }
+    if (ui->pushButton_network) {
+        connect(ui->pushButton_network, &QPushButton::clicked, this, [this]() {
+            showNetworkConfigDialog();
         });
     }
     if (auto *btn = findChild<QPushButton *>(QStringLiteral("pushButton_picture"))) {
@@ -236,6 +249,7 @@ MainWindow::MainWindow(QWidget *parent)
                 if (!m_logText) return;
                 m_logText->clear();
                 m_pausedNewLogCount = 0;
+                appendUiActionLog(QStringLiteral("UI"), QStringLiteral("已清空日志显示区"));
             });
             connect(m_btnPauseAutoScroll, &QPushButton::clicked, this, [this]() {
                 m_autoScrollEnabled = !m_autoScrollEnabled;
@@ -245,8 +259,10 @@ MainWindow::MainWindow(QWidget *parent)
                     m_btnPauseAutoScroll->setText(QStringLiteral("暂停自动滚动"));
                     if (m_logText && m_logText->verticalScrollBar())
                         m_logText->verticalScrollBar()->setValue(m_logText->verticalScrollBar()->maximum());
+                    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("恢复日志自动滚动"));
                 } else {
                     m_btnPauseAutoScroll->setText(QStringLiteral("恢复自动滚动"));
+                    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("暂停日志自动滚动"));
                 }
             });
         }
@@ -256,6 +272,14 @@ MainWindow::MainWindow(QWidget *parent)
     m_plotUiTimer.setTimerType(Qt::CoarseTimer);
     connect(&m_plotUiTimer, &QTimer::timeout, this, &MainWindow::onPlotRefreshTick);
     m_plotUiTimer.start();
+
+    appendUiActionLog(QStringLiteral("INIT"),
+                      QStringLiteral("主界面构造完成；绘图刷新定时器已启动(间隔30ms)"));
+    appendUiActionLog(QStringLiteral("SERIAL"),
+                      QStringLiteral("已从设置加载默认串口: %1 @%2")
+                          .arg(m_serialCfg.portName.trimmed().isEmpty() ? QStringLiteral("(空)")
+                                                                         : m_serialCfg.portName.trimmed())
+                          .arg(m_serialCfg.baudRate));
 }
 
 MainWindow::~MainWindow()
@@ -406,14 +430,13 @@ void MainWindow::initThreads()
                         .arg(missed)
                         .arg(prevSeq)
                         .arg(curSeq);
-                appendLogLine(QStringLiteral("[STREAM][WARN] %1").arg(detail));
-                appendUiActionLog(QStringLiteral("STREAM"), detail);
+                appendUiActionLog(QStringLiteral("STREAM"),
+                                  QStringLiteral("[WARN] %1").arg(detail));
             },
             Qt::QueuedConnection);
     connect(m_acq, &AcquisitionEngine::linkDiagnostic, this,
             [this](const QString &category, const QString &message, qint64 /*eventWallMs*/) {
-                appendLogLine(QStringLiteral("[%1][WARN] %2").arg(category, message));
-                appendUiActionLog(category, message);
+                appendUiActionLog(category, QStringLiteral("[WARN] %1").arg(message));
             },
             Qt::QueuedConnection);
     connect(m_acq, &AcquisitionEngine::streamGapDetected, m_csvWorker,
@@ -432,22 +455,40 @@ void MainWindow::initThreads()
                 Q_UNUSED(queueSizeAfter);
                 if (droppedCount <= m_logDropWatermark)
                     return;
-                appendLogLine(QStringLiteral("[LOG][DROP] LogBuffer overflow: cumulative dropped=%1 (software queue)")
-                                  .arg(droppedCount));
                 appendUiActionLog(QStringLiteral("LOG"),
-                                  QStringLiteral("LogBuffer cumulative dropped=%1").arg(droppedCount));
+                                  QStringLiteral("[DROP] LogBuffer overflow: cumulative dropped=%1 (software queue)")
+                                      .arg(droppedCount));
                 m_logDropWatermark = droppedCount;
             },
             Qt::QueuedConnection);
-    m_preprocUdp =new PreprocChunkUdpSender(this);
-    m_preprocUdp->setTarget(QHostAddress::LocalHost,50001);
-    connect(m_alg,&AlgorithmEngine::plotChunkReady,m_preprocUdp,&PreprocChunkUdpSender::sendPlotChunk);
+    NetworkSettingsStore::load(&m_netSettings);
+    m_udpHub = new UdpTelemetryHub(this);
+    m_udpHub->applySettings(m_netSettings);
+    connect(m_alg, &AlgorithmEngine::plotChunkReady, m_udpHub, &UdpTelemetryHub::sendPreprocPbc1,
+            Qt::QueuedConnection);
+    connect(m_alg, &AlgorithmEngine::fftResultReady, m_udpHub, &UdpTelemetryHub::sendFftPbf1,
+            Qt::QueuedConnection);
+    connect(m_alg, &AlgorithmEngine::spectrumReady, m_udpHub, &UdpTelemetryHub::sendPsdPbp1,
+            Qt::QueuedConnection);
     // 启动线程后再启动worker
     connect(m_logThread, &QThread::started, m_csvWorker, &CsvLogWorker::start);
 
     m_acqThread->start();
     m_algThread->start();
     m_logThread->start();
+
+    appendUiActionLog(QStringLiteral("INIT"),
+                      QStringLiteral("三线程已启动: 采集/算法/CSV 工作线程 start 完成"));
+    appendUiActionLog(QStringLiteral("NETWORK"),
+                      QStringLiteral("已加载并应用网络配置: enabled=%1 host=%2 PBC1=%3 PBF1=%4 PBP1=%5 send pre=%6 fft=%7 psd=%8")
+                          .arg(m_netSettings.enabled)
+                          .arg(m_netSettings.host)
+                          .arg(m_netSettings.portPreproc)
+                          .arg(m_netSettings.portFft)
+                          .arg(m_netSettings.portPsd)
+                          .arg(m_netSettings.sendPreproc)
+                          .arg(m_netSettings.sendFft)
+                          .arg(m_netSettings.sendPsd));
 }
 void MainWindow::setupTesterConnections()
 {
@@ -531,14 +572,15 @@ void MainWindow::updateSavePathUi()
             .arg(fft),
         5000);
 }
-//操作txt日志写入
+// 操作类日志：始终写入界面日志区；在开启操作 TXT 且路径有效时追加写入磁盘。
 void MainWindow::appendUiActionLog(const QString &category, const QString &message)
 {
+    appendLogLine(QStringLiteral("[%1] %2").arg(category, message));
+
     if (!m_uiTxtLoggingEnabled)
         return;
     if (m_uiTxtPath.isEmpty())
         return;
-
 
     QFile f(m_uiTxtPath);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
@@ -573,10 +615,12 @@ void MainWindow::on_pushButton_start_clicked()
 {
     // 三线程主链：线程A采集 + 线程C写盘
     if (!m_acq || !m_csvWorker) {
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("开始失败: 三线程未初始化，请先调用 initThreads()"));
         QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("三线程对象未初始化，请先调用 initThreads()"));
         return;
     }
     if (m_acqRunning) {
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("开始忽略: 采集已在运行，请先停止"));
         QMessageBox::information(this, QStringLiteral("提示"), QStringLiteral("采集已经在运行中，请先停止。"));
         return;
     }
@@ -599,16 +643,15 @@ void MainWindow::on_pushButton_start_clicked()
         }, Qt::QueuedConnection);
     }
 
-    // 操作日志 TXT
     if (m_uiTxtPath.isEmpty())
         m_uiTxtPath = makeDefaultUiTxtPath();
-    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("点击开始"));
-   // updateLogCsvPathUi();
     updateSavePathUi();
 
     if (m_serialCfg.portName.trimmed().isEmpty()) {
-        if (!showSerialConfigDialog())
+        if (!showSerialConfigDialog()) {
+            appendUiActionLog(QStringLiteral("UI"), QStringLiteral("开始取消: 未完成串口配置或校验未通过"));
             return;
+        }
     }
 
     // 线程C：按开关显式启动/停止 CSV worker
@@ -657,14 +700,24 @@ void MainWindow::on_pushButton_start_clicked()
         m_acq->startWithConfig(cfg);
     }, Qt::QueuedConnection);
 
+    appendUiActionLog(QStringLiteral("UI"),
+                      QStringLiteral("开始采集: %1 @%2 | EEG_CSV=%3 UI_TXT=%4 PSD_CSV=%5 FFT_CSV=%6")
+                          .arg(cfg.portName.trimmed())
+                          .arg(cfg.baudRate)
+                          .arg(m_csvLoggingEnable ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_uiTxtLoggingEnabled ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_psdLoggingEnable ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_fftLoggingEnable ? QStringLiteral("开") : QStringLiteral("关")));
+
     ui->statusbar->showMessage(QStringLiteral("已打开 %1 @%2")
                                    .arg(cfg.portName.trimmed())
                                    .arg(cfg.baudRate), 5000);
 }
 void MainWindow::on_pushButton_stop_clicked()
 {
+    const bool wasRunning = m_acqRunning;
     // 三线程主链停止
-    if (!m_acqRunning) {
+    if (!wasRunning) {
         ui->statusbar->showMessage(QStringLiteral("当前未在采集"), 2000);
     }
     if (m_alg) {
@@ -693,77 +746,44 @@ void MainWindow::on_pushButton_stop_clicked()
     */
     //状态栏提醒3s之后自动消失
     ui->statusbar->showMessage(QStringLiteral("已经停止"),3000);
-    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("点击停止"));
+    appendUiActionLog(QStringLiteral("UI"),
+                      wasRunning ? QStringLiteral("点击停止")
+                                 : QStringLiteral("点击停止（采集未在运行，仍已执行停止与队列清理）"));
 }
 void MainWindow::on_pushButton_save_clicked()
 {
-    QDialog dlg(this);
-    dlg.setWindowTitle(QStringLiteral("保存配置"));
-    dlg.setMinimumWidth(520);
-    auto *lay = new QVBoxLayout(&dlg);
+    SaveConfigDialog dlg(this);
+    dlg.loadState(m_csvLoggingEnable,
+                  m_uiTxtLoggingEnabled,
+                  m_psdLoggingEnable,
+                  m_fftLoggingEnable,
+                  m_eegCsvPath,
+                  m_uiTxtPath,
+                  m_psdCsvPath,
+                  m_fftCsvPath);
 
-    auto *cbEnableCsv = new QCheckBox(QStringLiteral("开始采集时启用 EEG CSV 保存"), &dlg);
-    cbEnableCsv->setChecked(m_csvLoggingEnable);
-    auto *cbEnableUiTxt = new QCheckBox(QStringLiteral("启用操作日志 TXT 保存"), &dlg);
-    cbEnableUiTxt->setChecked(m_uiTxtLoggingEnabled);
-    auto *cbEnablePsv =new QCheckBox(QStringLiteral("开始采集时启用 经过Welch 非参数功率谱估计(PSD)算法保存"),&dlg);
-    cbEnablePsv->setChecked(m_psdLoggingEnable);
-    auto *cbEnableFft = new QCheckBox(QStringLiteral("开始采集时启用 FFT 频谱（五频段幅值）CSV 保存"), &dlg);
-    cbEnableFft->setChecked(m_fftLoggingEnable);
-
-    auto *labEeg = new QLabel(QStringLiteral("EEG CSV：\n%1")
-                                  .arg(m_eegCsvPath.isEmpty() ? QStringLiteral("未设置") : m_eegCsvPath), &dlg);
-    labEeg->setWordWrap(true);
-    auto *labTxt = new QLabel(QStringLiteral("操作 TXT：\n%1")
-                                  .arg(m_uiTxtPath.isEmpty() ? QStringLiteral("未设置") : m_uiTxtPath), &dlg);
-    labTxt->setWordWrap(true);
-    auto *labPsd =new QLabel(QStringLiteral("PSD CSV: \n%1").arg(m_psdCsvPath.isEmpty()?QStringLiteral("未设置"):m_psdCsvPath),&dlg);
-    labPsd->setWordWrap(true);
-    auto *labFft = new QLabel(QStringLiteral("FFT CSV：\n%1")
-                                  .arg(m_fftCsvPath.isEmpty() ? QStringLiteral("未设置") : m_fftCsvPath), &dlg);
-    labFft->setWordWrap(true);
-
-    auto *btnNewEeg = new QPushButton(QStringLiteral("新建 EEG CSV"), &dlg);
-    auto *btnOpenEeg = new QPushButton(QStringLiteral("打开 EEG CSV"), &dlg);
-    auto *btnNewTxt = new QPushButton(QStringLiteral("新建 操作TXT"), &dlg);
-    auto *btnOpenTxt = new QPushButton(QStringLiteral("打开 操作TXT"), &dlg);
-    auto *btnNewPsd =new QPushButton(QStringLiteral("新建 PSD CSV"),&dlg);
-    auto *btnOpenPsd =new QPushButton(QStringLiteral("打开 PSD CSV "),&dlg);
-    auto *btnNewFft = new QPushButton(QStringLiteral("新建 FFT CSV"), &dlg);
-    auto *btnOpenFft = new QPushButton(QStringLiteral("打开 FFT CSV"), &dlg);
-    auto *btnSerialCfg = new QPushButton(QStringLiteral("串口配置..."), &dlg);
-
-
-    auto refresh = [&]() {
-        labEeg->setText(QStringLiteral("EEG CSV：\n%1")
-                            .arg(m_eegCsvPath.isEmpty() ? QStringLiteral("未设置") : m_eegCsvPath));
-        labTxt->setText(QStringLiteral("操作 TXT：\n%1")
-                            .arg(m_uiTxtPath.isEmpty() ? QStringLiteral("未设置") : m_uiTxtPath));
-        labPsd->setText(QStringLiteral("PSD CSV： \n%1")
-                             .arg(m_psdCsvPath.isEmpty()?QStringLiteral("未设置"):m_psdCsvPath));
-        labFft->setText(QStringLiteral("FFT CSV：\n%1")
-                            .arg(m_fftCsvPath.isEmpty() ? QStringLiteral("未设置") : m_fftCsvPath));
-    };
-
-    connect(btnNewEeg, &QPushButton::clicked, &dlg, [&]() {
+    connect(&dlg, &SaveConfigDialog::newEegClicked, this, [this, &dlg]() {
         m_eegCsvPath = makeDefaultEegCsvPath();
-        refresh();
+        dlg.refreshPathLabels(m_eegCsvPath, m_uiTxtPath, m_psdCsvPath, m_fftCsvPath);
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("新建 EEG_CSV 路径: %1").arg(m_eegCsvPath));
     });
-    connect(btnNewTxt, &QPushButton::clicked, &dlg, [&]() {
+    connect(&dlg, &SaveConfigDialog::newTxtClicked, this, [this, &dlg]() {
         m_uiTxtPath = makeDefaultUiTxtPath();
-        refresh();
+        dlg.refreshPathLabels(m_eegCsvPath, m_uiTxtPath, m_psdCsvPath, m_fftCsvPath);
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("新建 操作TXT 路径: %1").arg(m_uiTxtPath));
     });
-    connect(btnNewPsd,&QPushButton::clicked,&dlg,[&](){
-        m_psdCsvPath =makeDefaultPsdCsvPath();
-        refresh();
+    connect(&dlg, &SaveConfigDialog::newPsdClicked, this, [this, &dlg]() {
+        m_psdCsvPath = makeDefaultPsdCsvPath();
+        dlg.refreshPathLabels(m_eegCsvPath, m_uiTxtPath, m_psdCsvPath, m_fftCsvPath);
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("新建 PSD_CSV 路径: %1").arg(m_psdCsvPath));
     });
-    connect(btnNewFft, &QPushButton::clicked, &dlg, [&]() {
+    connect(&dlg, &SaveConfigDialog::newFftClicked, this, [this, &dlg]() {
         m_fftCsvPath = makeDefaultFftCsvPath();
-        refresh();
+        dlg.refreshPathLabels(m_eegCsvPath, m_uiTxtPath, m_psdCsvPath, m_fftCsvPath);
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("新建 FFT_CSV 路径: %1").arg(m_fftCsvPath));
     });
 
-
-    connect(btnOpenEeg, &QPushButton::clicked, &dlg, [&]() {
+    connect(&dlg, &SaveConfigDialog::openEegClicked, this, [this, &dlg]() {
         if (m_eegCsvPath.isEmpty() || !QFileInfo::exists(m_eegCsvPath)) {
             QMessageBox::information(&dlg, QStringLiteral("提示"), QStringLiteral("EEG CSV 文件不存在。"));
             return;
@@ -774,9 +794,9 @@ void MainWindow::on_pushButton_save_clicked()
 #else
         QDesktopServices::openUrl(QUrl::fromLocalFile(m_eegCsvPath));
 #endif
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("已打开 EEG_CSV 所在位置: %1").arg(m_eegCsvPath));
     });
-
-    connect(btnOpenTxt, &QPushButton::clicked, &dlg, [&]() {
+    connect(&dlg, &SaveConfigDialog::openTxtClicked, this, [this, &dlg]() {
         if (m_uiTxtPath.isEmpty() || !QFileInfo::exists(m_uiTxtPath)) {
             QMessageBox::information(&dlg, QStringLiteral("提示"), QStringLiteral("操作 TXT 文件不存在。"));
             return;
@@ -787,25 +807,23 @@ void MainWindow::on_pushButton_save_clicked()
 #else
         QDesktopServices::openUrl(QUrl::fromLocalFile(m_uiTxtPath));
 #endif
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("已打开 操作TXT 所在位置: %1").arg(m_uiTxtPath));
     });
-    connect(btnOpenPsd,&QPushButton::clicked,&dlg,[&](){
-        if(m_psdCsvPath.isEmpty()||!QFileInfo::exists(m_psdCsvPath))
-            {
-            QMessageBox::information(&dlg,QStringLiteral("提示"),QStringLiteral("PSD CSV 文件不存在。"));
+    connect(&dlg, &SaveConfigDialog::openPsdClicked, this, [this, &dlg]() {
+        if (m_psdCsvPath.isEmpty() || !QFileInfo::exists(m_psdCsvPath)) {
+            QMessageBox::information(&dlg, QStringLiteral("提示"), QStringLiteral("PSD CSV 文件不存在。"));
             return;
         }
-
 #if defined(Q_OS_WIN)
-    QProcess::startDetached(QStringLiteral("explorer.exe"),
-                            {QStringLiteral("/select,"),QDir::toNativeSeparators(m_psdCsvPath) });
+        QProcess::startDetached(QStringLiteral("explorer.exe"),
+                                {QStringLiteral("/select,"), QDir::toNativeSeparators(m_psdCsvPath)});
 #else
-    QDesktopServices::openUrl(QUrl::fromLocalFile(m_PsdCsvPath));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(m_psdCsvPath));
 #endif
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("已打开 PSD_CSV 所在位置: %1").arg(m_psdCsvPath));
     });
-
-    connect(btnOpenFft, &QPushButton::clicked, &dlg, [&]() {
-        if (m_fftCsvPath.isEmpty() || !QFileInfo::exists(m_fftCsvPath))
-        {
+    connect(&dlg, &SaveConfigDialog::openFftClicked, this, [this, &dlg]() {
+        if (m_fftCsvPath.isEmpty() || !QFileInfo::exists(m_fftCsvPath)) {
             QMessageBox::information(&dlg, QStringLiteral("提示"), QStringLiteral("FFT CSV 文件不存在。"));
             return;
         }
@@ -815,45 +833,22 @@ void MainWindow::on_pushButton_save_clicked()
 #else
         QDesktopServices::openUrl(QUrl::fromLocalFile(m_fftCsvPath));
 #endif
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("已打开 FFT_CSV 所在位置: %1").arg(m_fftCsvPath));
     });
-
-    lay->addWidget(cbEnableCsv);
-    lay->addWidget(cbEnableUiTxt);
-    lay->addWidget(cbEnablePsv);
-    lay->addWidget(cbEnableFft);
-    lay->addWidget(labEeg);
-    lay->addWidget(btnNewEeg);
-    lay->addWidget(btnOpenEeg);
-    lay->addSpacing(8);
-    lay->addWidget(labTxt);
-    lay->addWidget(btnNewTxt);
-    lay->addWidget(btnOpenTxt);
-    lay->addSpacing(8);
-    lay->addWidget(labPsd);
-    lay->addWidget(btnNewPsd);
-    lay->addWidget(btnOpenPsd);
-    lay->addSpacing(8);
-    lay->addWidget(labFft);
-    lay->addWidget(btnNewFft);
-    lay->addWidget(btnOpenFft);
-    lay->addSpacing(8);
-    lay->addWidget(btnSerialCfg);
-
-    auto *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
-    connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-    connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-    lay->addWidget(box);
-    connect(btnSerialCfg, &QPushButton::clicked, &dlg, [this]() {
+    connect(&dlg, &SaveConfigDialog::serialConfigClicked, this, [this]() {
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("从保存配置对话框打开串口设置"));
         showSerialConfigDialog();
     });
 
-    if (dlg.exec() != QDialog::Accepted)
+    if (dlg.exec() != QDialog::Accepted) {
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("保存配置已取消"));
         return;
+    }
 
-    m_csvLoggingEnable = cbEnableCsv->isChecked();
-    m_uiTxtLoggingEnabled = cbEnableUiTxt->isChecked();
-    m_psdLoggingEnable=cbEnablePsv->isChecked();
-    m_fftLoggingEnable = cbEnableFft->isChecked();
+    m_csvLoggingEnable = dlg.csvLoggingEnabled();
+    m_uiTxtLoggingEnabled = dlg.uiTxtLoggingEnabled();
+    m_psdLoggingEnable = dlg.psdLoggingEnabled();
+    m_fftLoggingEnable = dlg.fftLoggingEnabled();
     if (m_csvLoggingEnable && m_eegCsvPath.isEmpty())
         m_eegCsvPath = makeDefaultEegCsvPath();
     if (m_uiTxtPath.isEmpty())
@@ -864,8 +859,16 @@ void MainWindow::on_pushButton_save_clicked()
         m_fftCsvPath = makeDefaultFftCsvPath();
 
     updateSavePathUi();
-    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("保存配置：csvEnable=%1, eeg=%2, txt=%3")
-                                                .arg(m_csvLoggingEnable).arg(m_eegCsvPath, m_uiTxtPath));
+    appendUiActionLog(QStringLiteral("UI"),
+                      QStringLiteral("保存配置: EEG_CSV=%1, UI_TXT=%2, PSD_CSV=%3, FFT_CSV=%4 | eeg=%5 | uiTxt=%6 | psd=%7 | fft=%8")
+                          .arg(m_csvLoggingEnable ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_uiTxtLoggingEnabled ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_psdLoggingEnable ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_fftLoggingEnable ? QStringLiteral("开") : QStringLiteral("关"))
+                          .arg(m_eegCsvPath)
+                          .arg(m_uiTxtPath)
+                          .arg(m_psdCsvPath)
+                          .arg(m_fftCsvPath));
 
 }
 
@@ -895,79 +898,51 @@ void MainWindow::saveSerialSettings()
     settings.setValue(QStringLiteral("serial/flowControl"), static_cast<int>(m_serialCfg.flowControl));
 }
 
+void MainWindow::applyNetworkStreamToHub()
+{
+    if (!m_udpHub)
+        return;
+    m_udpHub->applySettings(m_netSettings);
+}
+
+void MainWindow::showNetworkConfigDialog()
+{
+    appendUiActionLog(QStringLiteral("NETWORK"), QStringLiteral("打开网络设置对话框"));
+    NetworkConfigDialog dlg(this);
+    dlg.setFromSettings(m_netSettings);
+    if (dlg.exec() != QDialog::Accepted) {
+        appendUiActionLog(QStringLiteral("NETWORK"), QStringLiteral("取消网络设置，未保存"));
+        return;
+    }
+    m_netSettings = dlg.toSettings();
+    NetworkSettingsStore::save(m_netSettings);
+    applyNetworkStreamToHub();
+    appendUiActionLog(QStringLiteral("NETWORK"),
+                      QStringLiteral("网络: enabled=%1 host=%2 ports PBC1=%3 PBF1=%4 PBP1=%5 send pre=%6 fft=%7 psd=%8")
+                          .arg(m_netSettings.enabled)
+                          .arg(m_netSettings.host)
+                          .arg(m_netSettings.portPreproc)
+                          .arg(m_netSettings.portFft)
+                          .arg(m_netSettings.portPsd)
+                          .arg(m_netSettings.sendPreproc)
+                          .arg(m_netSettings.sendFft)
+                          .arg(m_netSettings.sendPsd));
+}
+
 bool MainWindow::showSerialConfigDialog()
 {
-    QDialog dlg(this);
-    dlg.setWindowTitle(QStringLiteral("串口设置"));
-    dlg.setMinimumWidth(420);
-
-    auto *lay = new QVBoxLayout(&dlg);
-    auto *form = new QFormLayout();
-
-    auto *portBox = new QComboBox(&dlg);
-    for (const auto &info : QSerialPortInfo::availablePorts()) {
-        portBox->addItem(info.portName(), info.portName());
-    }
-    portBox->setEditable(true);
-    portBox->setCurrentText(m_serialCfg.portName);
-
-    auto *baudBox = new QComboBox(&dlg);
-    baudBox->setEditable(true);
-    const QList<int> bauds{9600, 19200, 38400, 57600, 115200, 230400, 460800};
-    for (int v : bauds) baudBox->addItem(QString::number(v), v);
-    baudBox->setCurrentText(QString::number(m_serialCfg.baudRate));
-
-    auto *dataBitsBox = new QComboBox(&dlg);
-    dataBitsBox->addItem(QStringLiteral("5"), static_cast<int>(QSerialPort::Data5));
-    dataBitsBox->addItem(QStringLiteral("6"), static_cast<int>(QSerialPort::Data6));
-    dataBitsBox->addItem(QStringLiteral("7"), static_cast<int>(QSerialPort::Data7));
-    dataBitsBox->addItem(QStringLiteral("8"), static_cast<int>(QSerialPort::Data8));
-    dataBitsBox->setCurrentIndex(qMax(0, dataBitsBox->findData(static_cast<int>(m_serialCfg.dataBits))));
-
-    auto *parityBox = new QComboBox(&dlg);
-    parityBox->addItem(QStringLiteral("None"), static_cast<int>(QSerialPort::NoParity));
-    parityBox->addItem(QStringLiteral("Even"), static_cast<int>(QSerialPort::EvenParity));
-    parityBox->addItem(QStringLiteral("Odd"), static_cast<int>(QSerialPort::OddParity));
-    parityBox->addItem(QStringLiteral("Mark"), static_cast<int>(QSerialPort::MarkParity));
-    parityBox->addItem(QStringLiteral("Space"), static_cast<int>(QSerialPort::SpaceParity));
-    parityBox->setCurrentIndex(qMax(0, parityBox->findData(static_cast<int>(m_serialCfg.parity))));
-
-    auto *stopBitsBox = new QComboBox(&dlg);
-    stopBitsBox->addItem(QStringLiteral("1"), static_cast<int>(QSerialPort::OneStop));
-    stopBitsBox->addItem(QStringLiteral("1.5"), static_cast<int>(QSerialPort::OneAndHalfStop));
-    stopBitsBox->addItem(QStringLiteral("2"), static_cast<int>(QSerialPort::TwoStop));
-    stopBitsBox->setCurrentIndex(qMax(0, stopBitsBox->findData(static_cast<int>(m_serialCfg.stopBits))));
-
-    auto *flowBox = new QComboBox(&dlg);
-    flowBox->addItem(QStringLiteral("None"), static_cast<int>(QSerialPort::NoFlowControl));
-    flowBox->addItem(QStringLiteral("RTS/CTS"), static_cast<int>(QSerialPort::HardwareControl));
-    flowBox->addItem(QStringLiteral("XON/XOFF"), static_cast<int>(QSerialPort::SoftwareControl));
-    flowBox->setCurrentIndex(qMax(0, flowBox->findData(static_cast<int>(m_serialCfg.flowControl))));
-
-    form->addRow(QStringLiteral("端口"), portBox);
-    form->addRow(QStringLiteral("波特率"), baudBox);
-    form->addRow(QStringLiteral("数据位"), dataBitsBox);
-    form->addRow(QStringLiteral("校验位"), parityBox);
-    form->addRow(QStringLiteral("停止位"), stopBitsBox);
-    form->addRow(QStringLiteral("流控"), flowBox);
-    lay->addLayout(form);
-
-    auto *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
-    connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-    connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-    lay->addWidget(box);
-
-    if (dlg.exec() != QDialog::Accepted)
+    appendUiActionLog(QStringLiteral("SERIAL"), QStringLiteral("打开串口设置对话框"));
+    SerialConfigDialog dlg(this);
+    dlg.setFromConfig(m_serialCfg);
+    if (dlg.exec() != QDialog::Accepted) {
+        appendUiActionLog(QStringLiteral("SERIAL"), QStringLiteral("取消串口设置，未保存"));
         return false;
+    }
 
-    m_serialCfg.portName = portBox->currentText().trimmed();
-    m_serialCfg.baudRate = baudBox->currentText().toInt();
-    m_serialCfg.dataBits = static_cast<QSerialPort::DataBits>(dataBitsBox->currentData().toInt());
-    m_serialCfg.parity = static_cast<QSerialPort::Parity>(parityBox->currentData().toInt());
-    m_serialCfg.stopBits = static_cast<QSerialPort::StopBits>(stopBitsBox->currentData().toInt());
-    m_serialCfg.flowControl = static_cast<QSerialPort::FlowControl>(flowBox->currentData().toInt());
+    m_serialCfg = dlg.toConfig();
 
     if (m_serialCfg.portName.isEmpty() || m_serialCfg.baudRate <= 0) {
+        appendUiActionLog(QStringLiteral("SERIAL"), QStringLiteral("串口参数无效，未保存（端口为空或波特率无效）"));
         QMessageBox::warning(this, QStringLiteral("参数无效"), QStringLiteral("请设置有效的端口和波特率。"));
         return false;
     }
@@ -991,14 +966,12 @@ void MainWindow::onSecondReport(quint64 secIndex, int rawPerSec, int framePerSec
         .arg(framePerSec)
         .arg(warnPerSec)
         .arg(pass ? QStringLiteral("OK") : QStringLiteral("NO"));
-    appendLogLine(line);
     ui->statusbar->showMessage(line, 1000);//状态栏临时显示 1 秒。
     appendUiActionLog(QStringLiteral("STAT"), line);
 }
 
 void MainWindow::onTestMessage(const QString &msg)
 {
-    appendLogLine(msg);
     appendUiActionLog(QStringLiteral("SYS"), msg);
 }
 
@@ -1008,8 +981,10 @@ void MainWindow::onTestMessage(const QString &msg)
         this,
         QStringLiteral("确认"),
         QStringLiteral("清除并重置会话？这会停止并重新开始采集，seq 从 0 重新计数。"));
-    if (ret != QMessageBox::Yes)
+    if (ret != QMessageBox::Yes) {
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("清除会话: 已取消"));
         return;
+    }
 
     // 这里你可保存上次端口，或弹窗重新选择
     const QString port = QStringLiteral("COM7");
@@ -1021,7 +996,27 @@ void MainWindow::onTestMessage(const QString &msg)
 }
 void MainWindow::on_pushButton_openLogCsv_clicked()
 {
-    // 先留空也可以，至少先通过链接
+    if (m_eegCsvPath.isEmpty()) {
+        appendUiActionLog(QStringLiteral("UI"),
+                          QStringLiteral("打开 EEG_CSV: 路径未设置，请在「保存」中设置或开始采集后生成默认路径"));
+        if (ui && ui->statusbar)
+            ui->statusbar->showMessage(QStringLiteral("EEG CSV 路径未设置"), 3000);
+        return;
+    }
+    if (!QFileInfo::exists(m_eegCsvPath)) {
+        appendUiActionLog(QStringLiteral("UI"),
+                          QStringLiteral("打开 EEG_CSV: 文件不存在 %1").arg(m_eegCsvPath));
+        if (ui && ui->statusbar)
+            ui->statusbar->showMessage(QStringLiteral("文件不存在"), 3000);
+        return;
+    }
+#if defined(Q_OS_WIN)
+    QProcess::startDetached(QStringLiteral("explorer.exe"),
+                            {QStringLiteral("/select,"), QDir::toNativeSeparators(m_eegCsvPath)});
+#else
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_eegCsvPath));
+#endif
+    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("已打开 EEG_CSV 所在位置: %1").arg(m_eegCsvPath));
 }
 
 void MainWindow::onPlotRefreshTick()
@@ -1099,6 +1094,10 @@ void MainWindow::appendLogLine(const QString &line)
 
 void MainWindow::restartSessionWithReset(const QString &port, qint32 baud)
 {
+    Q_UNUSED(port);
+    Q_UNUSED(baud);
+    appendUiActionLog(QStringLiteral("SESSION"),
+                      QStringLiteral("清除会话: 停止采集与写盘、重置算法状态、清空曲线缓存"));
     if (!m_acq || !m_alg || !m_csvWorker)
         return;
 
@@ -1154,39 +1153,28 @@ void MainWindow::on_pushButton_picture_clicked()
 
 bool MainWindow::showChartModeDialog()
 {
-    QDialog dlg(this);
-    dlg.setWindowTitle(QStringLiteral("更换图表"));
-    auto *lay = new QVBoxLayout(&dlg);
-
-    auto *rRaw = new QRadioButton(QStringLiteral("生成预处理之后的图像"), &dlg);
-    auto *rFft = new QRadioButton(QStringLiteral("生成FFT频谱的图像"), &dlg);
-    auto *rPsd = new QRadioButton(QStringLiteral("生成功率频段的图像"), &dlg);
-
-    auto *group = new QButtonGroup(&dlg);
-    group->setExclusive(true);
-    group->addButton(rRaw, static_cast<int>(ChartMode::RawTime));
-    group->addButton(rFft, static_cast<int>(ChartMode::FftSpectrum));
-    group->addButton(rPsd, static_cast<int>(ChartMode::BandPower));
-
-    switch (m_chartMode) {
-    case ChartMode::RawTime: rRaw->setChecked(true); break;
-    case ChartMode::FftSpectrum: rFft->setChecked(true); break;
-    case ChartMode::BandPower: rPsd->setChecked(true); break;
+    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("打开图表模式对话框"));
+    ChartModeDialog dlg(this);
+    dlg.setChartMode(static_cast<int>(m_chartMode));
+    if (dlg.exec() != QDialog::Accepted) {
+        appendUiActionLog(QStringLiteral("UI"), QStringLiteral("图表模式设置已取消"));
+        return false;
     }
 
-    lay->addWidget(rRaw);
-    lay->addWidget(rFft);
-    lay->addWidget(rPsd);
-
-    auto *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
-    connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-    connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-    lay->addWidget(box);
-
-    if (dlg.exec() != QDialog::Accepted)
-        return false;
-
-    m_chartMode = static_cast<ChartMode>(group->checkedId());
+    m_chartMode = static_cast<ChartMode>(dlg.selectedChartMode());
+    QString modeName;
+    switch (m_chartMode) {
+    case ChartMode::RawTime:
+        modeName = QStringLiteral("预处理时域");
+        break;
+    case ChartMode::FftSpectrum:
+        modeName = QStringLiteral("FFT 频谱");
+        break;
+    case ChartMode::BandPower:
+        modeName = QStringLiteral("功率频段(PSD)");
+        break;
+    }
+    appendUiActionLog(QStringLiteral("UI"), QStringLiteral("图表模式已切换: %1").arg(modeName));
     // 切换图表类型时，重置到自动跟随，避免沿用上一种图的历史坐标导致“看不见曲线”。
     m_chartAutoFollow = true;
     m_plotDirty = true;
@@ -1219,6 +1207,7 @@ void MainWindow::setupPlotInteractions()
     connect(m_customPlot, &QCustomPlot::mouseDoubleClick, this, [this](QMouseEvent *) {
         m_chartAutoFollow = true;
         m_plotDirty = true;
+        appendUiActionLog(QStringLiteral("PLOT"), QStringLiteral("双击图表: 恢复 X 轴自动跟随"));
     });
     if (!m_clickMarker) {
         m_clickMarker = new QCPItemTracer(m_customPlot);
