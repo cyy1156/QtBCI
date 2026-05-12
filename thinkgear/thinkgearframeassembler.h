@@ -22,6 +22,10 @@ public slots:
     void onBytes(const QByteArray &frame);
 signals:
     void frameReady(const QByteArray &frame);
+    /** 每发生一次校验失败时发射（参数为累计次数） */
+    void checksumFailureOccurred(quint64 totalSoFar);
+    /** 每因非法长度丢弃同步字节时发射（参数为累计次数） */
+    void lengthResyncOccurred(quint64 totalSoFar);
 
     void rxBufferOverflowed(int previousSize);
 private:

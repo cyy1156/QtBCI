@@ -164,7 +164,10 @@ void ThinkGearLinkTester::onRawUvReady(double uv)
 
 
     LogItem li;
-    li.tsMs=now.toString(Qt::TextDate);;
+    const qint64 ms = QDateTime::currentMSecsSinceEpoch();
+    li.wallMs = ms;
+    li.tsMs = QDateTime::fromMSecsSinceEpoch(ms, Qt::LocalTime)
+                  .toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
     li.seq=seq;
     li.rawUv=uv;
     li.rawInt16=m_lastRawInt16;

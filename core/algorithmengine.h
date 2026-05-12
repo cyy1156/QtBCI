@@ -7,11 +7,20 @@
 #include "preprocessing/eeg_preprocess_pipeline.h"
 #include "core/fftfeatureextractor.h"
 struct RawPacket;
-struct PlotChunk { QVector<double> y; quint64 seqStart=0; quint64 seqEnd=0; };
+struct PlotChunk {
+    QVector<double> y;
+    quint64 seqStart = 0;
+    quint64 seqEnd = 0;
+    /** 与触发本窗的最后一个 RawPacket 一致，用于按 215Hz 回推每点墙钟 */
+    qint64 anchorWallMs = -1;
+    quint64 anchorSeq = 0;
+};
 struct AlgoResult { QString tsMs=0; quint64 seqEnd=0; double score=0.0; QString label; };
 struct FftResult
 {
     QString tsMs;
+    /** 本窗口算法完成时刻的 UTC 毫秒（与 tsMs 对应），供 UI 时间轴 */
+    qint64 wallMs = 0;
     quint64 seqStart = 0;
     quint64 seqEnd = 0;
     double fsUsed = 0.0;
@@ -30,6 +39,7 @@ struct FftResult
 struct SpectrumResult
 {
     QString tsMs;
+    qint64 wallMs = 0;
     quint64 seqStart = 0;
     quint64 seqEnd = 0;
     double fsUsed = 0.0;

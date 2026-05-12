@@ -7698,6 +7698,18 @@
 			"value" : "D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Gui"
 		},
 		{
+			"name" : "Qt6NetWork_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Qt6NetWork."
+				}
+			],
+			"type" : "PATH",
+			"value" : "D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network"
+		},
+		{
 			"name" : "Qt6Network_DIR",
 			"properties" : 
 			[

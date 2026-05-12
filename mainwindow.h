@@ -12,6 +12,8 @@
 #include<QTextStream>
 #include<core/acquisitionengine.h>
 #include<core/algorithmengine.h>
+#include<Net/preprocchunkudpsender.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -106,6 +108,8 @@ public:
         double beta = 0.0;
         double gamma = 0.0;
         quint64 seqEnd = 0;
+        qint64 wallMs = 0;
+        QString tsMs;
     };
     struct PsdBandPoint {
         double delta = 0.0;
@@ -114,6 +118,8 @@ public:
         double beta = 0.0;
         double gamma = 0.0;
         quint64 seqEnd = 0;
+        qint64 wallMs = 0;
+        QString tsMs;
     };
 
     ChartMode m_chartMode = ChartMode::RawTime;
@@ -135,6 +141,10 @@ public:
     bool m_autoScrollEnabled = true;
     int m_pausedNewLogCount = 0;
     bool m_acqRunning = false;
+    /** 上次已上报的 LogBuffer 丢弃计数（用于 [LOG][DROP] 增量告警） */
+    int m_logDropWatermark = 0;
     SerialPortConfig m_serialCfg;
+
+    PreprocChunkUdpSender *m_preprocUdp =nullptr;
 };
 #endif // MAINWINDOW_H

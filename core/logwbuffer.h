@@ -9,8 +9,10 @@
 #include <QtGlobal>
 struct LogItem {
     QString tsMs ;
+    qint64 wallMs = -1; // UTC 毫秒，与 tsMs 一致；raw 必填便于整秒统计
     QString kind;      // raw / preproc
     quint64 seq = 0;
+    quint64 gapSincePrev = 0;
     qint16 rawInt16 = 0;
     quint8 signalQuality = 255; // 0~200, 255=unknown
     double rawUv = 0.0;

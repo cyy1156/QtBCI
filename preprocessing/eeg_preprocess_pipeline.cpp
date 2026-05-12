@@ -1,6 +1,7 @@
 #include "eeg_preprocess_pipeline.h"
 
 #include <QtMath>
+#include <limits>
 
 EegPreprocessPipeline::EegPreprocessPipeline()
     : EegPreprocessPipeline(Options())
@@ -34,6 +35,7 @@ void EegPreprocessPipeline::reset()
     m_fs_smooth = m_opt.fs_nominal;
     m_has_last = false;
     m_last = FsHint{};
+    m_last_fs_inst = std::numeric_limits<double>::quiet_NaN();
 }
 
 double EegPreprocessPipeline::clamp(double v, double lo, double hi)
@@ -66,6 +68,8 @@ void EegPreprocessPipeline::calcPtpAndAbsMax(const QVector<double> &x, double &p
 
 void EegPreprocessPipeline::updateFsEstimate(const FsHint &hint, QString &dbg)
 {
+    m_last_fs_inst = std::numeric_limits<double>::quiet_NaN();
+
     if (hint.seq < 0 || hint.ts_ms <= 0)
         return;
 
@@ -84,6 +88,7 @@ void EegPreprocessPipeline::updateFsEstimate(const FsHint &hint, QString &dbg)
         return;
 
     const double fs_inst = (double)dseq * 1000.0 / (double)dtms;
+    m_last_fs_inst = fs_inst;
     const double fs_limited = clamp(fs_inst, m_opt.fs_min, m_opt.fs_max);
     m_fs_smooth = m_opt.fs_alpha * m_fs_smooth + (1.0 - m_opt.fs_alpha) * fs_limited;
     dbg += QStringLiteral("fs_inst=%1 fs_use=%2; ")
@@ -98,7 +103,16 @@ EegPreprocessPipeline::Result EegPreprocessPipeline::process(const QVector<doubl
     out.y = x_uv;
 
     QString dbg;
-    updateFsEstimate(hint, dbg);
+    if (m_opt.use_fixed_nominal_fs)
+    {
+        m_fs_smooth = m_opt.fs_nominal;
+        out.fs_inst_hz = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+        updateFsEstimate(hint, dbg);
+        out.fs_inst_hz = m_last_fs_inst;
+    }
 
     const int fs = (int)qRound(m_fs_smooth);
     out.fs_used = (double)fs;

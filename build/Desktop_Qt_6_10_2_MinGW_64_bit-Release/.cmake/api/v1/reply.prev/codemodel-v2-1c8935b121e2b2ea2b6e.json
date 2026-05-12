@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Release-201b15a2b18a24c0e81c.json",
+					"jsonFile" : "directory-.-Release-dba3d45a044d8179c58d.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "QtBCI::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-QtBCI-Release-b363185764bcc214bef2.json",
+					"jsonFile" : "target-QtBCI-Release-4310ce055aa5c1b75491.json",
 					"name" : "QtBCI",
 					"projectIndex" : 0
 				},

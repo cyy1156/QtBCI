@@ -61,6 +61,7 @@ void ThinkGearFrameAssembler::pocessBuffer()
         const auto n =static_cast<unsigned char>(m_rxBuffer[2]);
         if(n==0||n>170){
             ++m_lengthResyncs;
+            emit lengthResyncOccurred(m_lengthResyncs);
             m_rxBuffer.remove(0,1);
             continue;
         }
@@ -71,6 +72,7 @@ void ThinkGearFrameAssembler::pocessBuffer()
         if(m_verifyChecksum&&!checksumOk(frame))
         {
             ++m_checksumFailures;
+            emit checksumFailureOccurred(m_checksumFailures);
             m_rxBuffer.remove(0,1);
             continue;
 

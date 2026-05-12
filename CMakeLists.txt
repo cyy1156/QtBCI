@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(QtBCI LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort PrintSupport)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort PrintSupport NetWork)
 
 qt_standard_project_setup()
 
@@ -36,6 +36,7 @@ qt_add_executable(QtBCI
     preprocessing/eeg_preprocess_pipeline.h preprocessing/eeg_preprocess_pipeline.cpp
     core/psdfeatureextractor.h core/psdfeatureextractor.cpp
     core/fftfeatureextractor.h core/fftfeatureextractor.cpp
+    Net/preprocchunkudpsender.h Net/preprocchunkudpsender.cpp
 
 
 )
@@ -55,6 +56,7 @@ target_link_libraries(QtBCI
         Qt::Widgets
         Qt::SerialPort
         Qt::PrintSupport
+        Qt::Network
 )
 
 #

@@ -3,6 +3,7 @@
 #include <QtGlobal>
 #include <QVector>
 #include <QString>
+#include <limits>
 
 #include <vector>
 
@@ -16,11 +17,12 @@ class EegPreprocessPipeline
 public:
     struct Options
     {
-        // -------- 采样率估计 --------
-        double fs_nominal = 250.0;
+        // -------- 采样率（设备标称 215 Hz；默认不做墙钟在线估计）--------
+        double fs_nominal = 215.0;
+        bool use_fixed_nominal_fs = true;
         double fs_min = 200.0;
-        double fs_max = 300.0;
-        double fs_alpha = 0.90;   // 越大越平滑
+        double fs_max = 230.0;
+        double fs_alpha = 0.90;   // use_fixed_nominal_fs=false 时平滑用
 
         // -------- 滤波参数（单通道/多通道通用）--------
         bool enable_notch = true;
@@ -66,6 +68,8 @@ public:
     {
         QVector<double> y;  // 单通道输出（µV）
         double fs_used = 0.0;//实际帧率
+        /** 本次 updateFsHint 得到的瞬时帧率 (Hz)，未参与平滑；无效时为 NaN */
+        double fs_inst_hz = std::numeric_limits<double>::quiet_NaN();
         bool artifact_marked = false;
         double ptp_uv = 0.0;
         double absmax_uv = 0.0;
@@ -94,6 +98,7 @@ private:
 private:
     Options m_opt;
     double m_fs_smooth = 250.0;
+    double m_last_fs_inst = std::numeric_limits<double>::quiet_NaN();
     bool m_has_last = false;
     FsHint m_last;
 };

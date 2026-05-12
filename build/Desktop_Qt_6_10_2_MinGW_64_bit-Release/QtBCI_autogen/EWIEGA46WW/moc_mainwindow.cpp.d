@@ -1,5 +1,6 @@
 D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI_autogen/EWIEGA46WW/moc_mainwindow.cpp: D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI_autogen/moc_predefs.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.h \
@@ -42,6 +43,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/QQueue \
   D:/qt/6.10.2/mingw_64/include/QtCore/QRect \
   D:/qt/6.10.2/mingw_64/include/QtCore/QScopedPointer \
+  D:/qt/6.10.2/mingw_64/include/QtCore/QSet \
   D:/qt/6.10.2/mingw_64/include/QtCore/QSharedPointer \
   D:/qt/6.10.2/mingw_64/include/QtCore/QSize \
   D:/qt/6.10.2/mingw_64/include/QtCore/QSizeF \
@@ -469,6 +471,14 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtGui/qwindowdefs.h \
   D:/qt/6.10.2/mingw_64/include/QtGui/qwindowdefs_win.h \
   D:/qt/6.10.2/mingw_64/include/QtGui/qwindowsmimeconverter.h \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/QHostAddress \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/QUdpSocket \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/qabstractsocket.h \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/qhostaddress.h \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
+  D:/qt/6.10.2/mingw_64/include/QtNetwork/qudpsocket.h \
   D:/qt/6.10.2/mingw_64/include/QtPrintSupport/QtPrintSupport \
   D:/qt/6.10.2/mingw_64/include/QtPrintSupport/QtPrintSupportDepends \
   D:/qt/6.10.2/mingw_64/include/QtPrintSupport/qabstractprintdialog.h \

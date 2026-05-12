@@ -1,5 +1,7 @@
 QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/CMakeLists.txt \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/preprocchunkudpsender.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/QCustomPlot/qcustomplot.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.qtc/package-manager/auto-setup.cmake \
@@ -75,6 +77,7 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QQueue \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QRect \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QScopedPointer \
+	D:/qt/6.10.2/mingw_64/include/QtCore/QSet \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QSharedPointer \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QSize \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QSizeF \
@@ -502,6 +505,14 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtGui/qwindowdefs.h \
 	D:/qt/6.10.2/mingw_64/include/QtGui/qwindowdefs_win.h \
 	D:/qt/6.10.2/mingw_64/include/QtGui/qwindowsmimeconverter.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/QHostAddress \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/QUdpSocket \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qabstractsocket.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qhostaddress.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
+	D:/qt/6.10.2/mingw_64/include/QtNetwork/qudpsocket.h \
 	D:/qt/6.10.2/mingw_64/include/QtPrintSupport/QtPrintSupport \
 	D:/qt/6.10.2/mingw_64/include/QtPrintSupport/QtPrintSupportDepends \
 	D:/qt/6.10.2/mingw_64/include/QtPrintSupport/qabstractprintdialog.h \
@@ -781,6 +792,31 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersion.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkDependencies.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkPlugins.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6NetworkVersionlessAliasTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginAdditionalTargetInfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginConfig.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets-relwithdebinfo.cmake \
+	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportAdditionalTargetInfo.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportConfig.cmake \
 	D:/qt/6.10.2/mingw_64/lib/cmake/Qt6PrintSupport/Qt6PrintSupportConfigVersion.cmake \

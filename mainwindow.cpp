@@ -3,7 +3,7 @@
 
 // 旧单链路对象（ThinkGearLinkTester）相关 include，注释保留
 // #include "thinkgear/thinkgearlinktester.h"
-
+#include <core/algorithmengine.h>
 #include <QDateTime>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -35,6 +35,42 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QToolTip>
+#include <QSharedPointer>
+
+namespace {
+
+double bandPointTimeKey(qint64 wallMs, const QString &tsMs)
+{
+    if (wallMs > 0)
+        return static_cast<double>(wallMs) / 1000.0;
+    if (!tsMs.isEmpty()) {
+        const QDateTime dt = QDateTime::fromString(tsMs, QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
+        if (dt.isValid())
+            return static_cast<double>(dt.toMSecsSinceEpoch()) / 1000.0;
+    }
+    return 0.0;
+}
+
+void applySampleIndexXAxis(QCustomPlot *plot)
+{
+    if (!plot)
+        return;
+    plot->xAxis->setTicker(QSharedPointer<QCPAxisTicker>(new QCPAxisTicker));
+    plot->xAxis->setLabel(QStringLiteral("Sample"));
+}
+
+void applyLocalDateTimeXAxis(QCustomPlot *plot)
+{
+    if (!plot)
+        return;
+    QSharedPointer<QCPAxisTickerDateTime> dtTicker(new QCPAxisTickerDateTime);
+    dtTicker->setDateTimeFormat(QStringLiteral("HH:mm:ss.zzz\nyyyy-MM-dd"));
+    dtTicker->setDateTimeSpec(Qt::LocalTime);
+    plot->xAxis->setTicker(dtTicker);
+    plot->xAxis->setLabel(QStringLiteral("Time (local)"));
+}
+
+} // namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -258,13 +294,32 @@ void MainWindow::initThreads()
         // 2) 这里是 UI 线程，后续可直接用 m_plotCache 更新 QCustomPlot
         // 目前使用定时器统一刷新，避免每个 chunk 都重绘导致 UI 卡顿
 
-        // 3) 预处理后数据也进入同一个 CSV 队列
-        const QString ts = QDateTime::currentDateTime().toString(Qt::TextDate);
+        // 3) 预处理后入 CSV 队列：按标称 215Hz 从 anchor 回推每点墙钟，与 raw 时间对齐
+        static constexpr double kDeviceNominalFs = 215.0;
         for (int i = 0; i < pc.y.size(); ++i) {
+            const quint64 seq = pc.seqStart + static_cast<quint64>(i);
+            qint64 wallMs;
+            if (pc.anchorWallMs >= 0) {
+                if (pc.anchorSeq >= seq) {
+                    const qint64 dseq = static_cast<qint64>(pc.anchorSeq - seq);
+                    wallMs = pc.anchorWallMs
+                             - static_cast<qint64>(qRound(dseq * (1000.0 / kDeviceNominalFs)));
+                } else {
+                    const qint64 dseq = static_cast<qint64>(seq - pc.anchorSeq);
+                    wallMs = pc.anchorWallMs
+                             + static_cast<qint64>(qRound(dseq * (1000.0 / kDeviceNominalFs)));
+                }
+            } else {
+                wallMs = QDateTime::currentMSecsSinceEpoch();
+            }
+            const QString ts = QDateTime::fromMSecsSinceEpoch(wallMs, Qt::LocalTime)
+                                   .toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
             LogItem li;
             li.tsMs = ts;
+            li.wallMs = wallMs;
             li.kind = QStringLiteral("preproc");
-            li.seq = pc.seqStart + static_cast<quint64>(i);
+            li.seq = seq;
+            li.gapSincePrev = 0;
             li.rawInt16 = 0;
             li.signalQuality = 255;
             li.rawUv = std::numeric_limits<double>::quiet_NaN();
@@ -273,7 +328,8 @@ void MainWindow::initThreads()
         }
     });
     connect(m_alg, &AlgorithmEngine::algoResultReady, this, [this](const AlgoResult &res){
-        appendLogLine(QStringLiteral("[ALG] seq=%1 score=%2 label=%3")
+        appendLogLine(QStringLiteral("[ALG] ts=%1 seq=%2 score=%3 label=%4")
+                          .arg(res.tsMs)
                           .arg(res.seqEnd)
                           .arg(res.score, 0, 'f', 3)
                           .arg(res.label));
@@ -283,11 +339,13 @@ void MainWindow::initThreads()
     connect(m_acq, &AcquisitionEngine::rawPacketReady, this, [this](const RawPacket &p){
         LogItem li;
         li.tsMs = p.tsMs;
+        li.wallMs = p.wallMs;
         li.kind = QStringLiteral("raw");
         li.seq = p.seq;
         li.rawInt16 = p.rawInt16;
         li.signalQuality = p.signalQuality;
         li.rawUv = p.rawUv;
+        li.gapSincePrev = p.gapSincePrev;
         li.preprocUv = std::numeric_limits<double>::quiet_NaN();
         m_logBuffer.push(li);
     });
@@ -308,6 +366,8 @@ void MainWindow::initThreads()
         p.beta = fr.beta;
         p.gamma = fr.gamma;
         p.seqEnd = fr.seqEnd;
+        p.wallMs = fr.wallMs;
+        p.tsMs = fr.tsMs;
         m_fftCache.push_back(p);
         if (m_fftCache.size() > m_featureCacheMax)
             m_fftCache.remove(0, m_fftCache.size() - m_featureCacheMax);
@@ -322,6 +382,8 @@ void MainWindow::initThreads()
         p.beta = sp.beta;
         p.gamma = sp.gamma;
         p.seqEnd = sp.seqEnd;
+        p.wallMs = sp.wallMs;
+        p.tsMs = sp.tsMs;
         m_psdCache.push_back(p);
         if (m_psdCache.size() > m_featureCacheMax)
             m_psdCache.remove(0, m_psdCache.size() - m_featureCacheMax);
@@ -337,13 +399,49 @@ void MainWindow::initThreads()
     connect(m_acq, &AcquisitionEngine::runningChanged, this, [this](bool running){
         m_acqRunning = running;
     });
+    connect(m_acq, &AcquisitionEngine::streamGapDetected, this,
+            [this](quint64 missed, quint64 prevSeq, quint64 curSeq, qint64 /*eventWallMs*/) {
+                const QString detail =
+                    QStringLiteral("missed=%1 after_seq=%2 got_seq=%3")
+                        .arg(missed)
+                        .arg(prevSeq)
+                        .arg(curSeq);
+                appendLogLine(QStringLiteral("[STREAM][WARN] %1").arg(detail));
+                appendUiActionLog(QStringLiteral("STREAM"), detail);
+            },
+            Qt::QueuedConnection);
+    connect(m_acq, &AcquisitionEngine::linkDiagnostic, this,
+            [this](const QString &category, const QString &message, qint64 /*eventWallMs*/) {
+                appendLogLine(QStringLiteral("[%1][WARN] %2").arg(category, message));
+                appendUiActionLog(category, message);
+            },
+            Qt::QueuedConnection);
+    connect(m_acq, &AcquisitionEngine::streamGapDetected, m_csvWorker,
+            &CsvLogWorker::onAcquisitionStreamGap, Qt::QueuedConnection);
+    connect(m_acq, &AcquisitionEngine::linkDiagnostic, m_csvWorker,
+            &CsvLogWorker::onAcquisitionLinkDiag, Qt::QueuedConnection);
     connect(m_csvWorker, &CsvLogWorker::workerInfo, this, [this](const QString &msg){
         appendLogLine(QStringLiteral("[CSV][INFO] %1").arg(msg));
     });
     connect(m_csvWorker, &CsvLogWorker::workerError, this, [this](const QString &msg){
         appendLogLine(QStringLiteral("[CSV][ERROR] %1").arg(msg));
     });
-
+    connect(m_csvWorker, &CsvLogWorker::drained, this,
+            [this](int items, int queueSizeAfter, int droppedCount) {
+                Q_UNUSED(items);
+                Q_UNUSED(queueSizeAfter);
+                if (droppedCount <= m_logDropWatermark)
+                    return;
+                appendLogLine(QStringLiteral("[LOG][DROP] LogBuffer overflow: cumulative dropped=%1 (software queue)")
+                                  .arg(droppedCount));
+                appendUiActionLog(QStringLiteral("LOG"),
+                                  QStringLiteral("LogBuffer cumulative dropped=%1").arg(droppedCount));
+                m_logDropWatermark = droppedCount;
+            },
+            Qt::QueuedConnection);
+    m_preprocUdp =new PreprocChunkUdpSender(this);
+    m_preprocUdp->setTarget(QHostAddress::LocalHost,50001);
+    connect(m_alg,&AlgorithmEngine::plotChunkReady,m_preprocUdp,&PreprocChunkUdpSender::sendPlotChunk);
     // 启动线程后再启动worker
     connect(m_logThread, &QThread::started, m_csvWorker, &CsvLogWorker::start);
 
@@ -584,6 +682,7 @@ void MainWindow::on_pushButton_stop_clicked()
     }
     // 清日志队列，避免旧数据在下次 start 时再次写盘
     m_logBuffer.clear(true);
+    m_logDropWatermark = 0;
     // 按你的需求：停止时保留当前图像，不清空 UI 缓存。
     // 如需清空，使用“清除”按钮。
 
@@ -1146,10 +1245,15 @@ void MainWindow::setupPlotInteractions()
             const double x = i1d->dataMainKey(dataIndex);
             const double y = i1d->dataMainValue(dataIndex);
             const QString name = plottable->name().isEmpty() ? QStringLiteral("curve") : plottable->name();
-            const QString text = QStringLiteral("%1\nx=%2, y=%3")
-                                     .arg(name)
-                                     .arg(x, 0, 'f', 2)
-                                     .arg(y, 0, 'f', 3);
+            QString xShow;
+            if (m_chartMode == ChartMode::FftSpectrum || m_chartMode == ChartMode::BandPower) {
+                const QDateTime dt = QDateTime::fromMSecsSinceEpoch(qRound64(x * 1000.0), Qt::LocalTime);
+                xShow = dt.isValid() ? dt.toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"))
+                                     : QString::number(x, 'f', 3);
+            } else {
+                xShow = QString::number(x, 'f', 2);
+            }
+            const QString text = QStringLiteral("%1\nt=%2, y=%3").arg(name).arg(xShow).arg(y, 0, 'f', 3);
             if (m_clickMarker) {
                 m_clickMarker->position->setCoords(x, y);
                 m_clickMarker->setVisible(true);
@@ -1157,10 +1261,8 @@ void MainWindow::setupPlotInteractions()
             }
             QToolTip::showText(event->globalPosition().toPoint(), text, m_customPlot);
             if (ui && ui->statusbar) {
-                ui->statusbar->showMessage(
-                    QStringLiteral("%1: x=%2, y=%3").arg(name).arg(x, 0, 'f', 2).arg(y, 0, 'f', 3),
-                    2500
-                );
+                ui->statusbar->showMessage(QStringLiteral("%1: t=%2, y=%3").arg(name).arg(xShow).arg(y, 0, 'f', 3),
+                                           2500);
             }
         }
     );
@@ -1202,7 +1304,7 @@ void MainWindow::renderRawChart()
     m_customPlot->legend->setVisible(false);
     m_customPlot->graph(0)->setName(QStringLiteral("Raw/Preproc"));
     m_customPlot->graph(0)->setPen(QPen(QColor(0, 210, 170), 1));
-    m_customPlot->xAxis->setLabel(QStringLiteral("Sample"));
+    applySampleIndexXAxis(m_customPlot);
     m_customPlot->yAxis->setLabel(QStringLiteral("uV"));
 
     // Y 轴按当前窗口数据自适应，保证负半轴也能完整看到波形。
@@ -1236,9 +1338,10 @@ void MainWindow::renderFftChart()
     if (n <= 0)
         return;
     ensureGraphCount(5);
+    applyLocalDateTimeXAxis(m_customPlot);
     QVector<double> x(n), d(n), t(n), a(n), b(n), g(n);
     for (int i = 0; i < n; ++i) {
-        x[i] = i;
+        x[i] = bandPointTimeKey(m_fftCache[i].wallMs, m_fftCache[i].tsMs);
         d[i] = m_fftCache[i].delta;
         t[i] = m_fftCache[i].theta;
         a[i] = m_fftCache[i].alpha;
@@ -1265,20 +1368,28 @@ void MainWindow::renderFftChart()
     m_customPlot->legend->setBorderPen(QPen(QColor(80, 90, 110)));
     m_customPlot->legend->setTextColor(QColor(220, 230, 245));
     m_customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop | Qt::AlignRight);
-    m_customPlot->xAxis->setLabel(QStringLiteral("Window Index"));
     m_customPlot->yAxis->setLabel(QStringLiteral("FFT Amp"));
     if (m_chartAutoFollow) {
         const int visibleCount = qMin(m_featureCacheMax, 120);
+        const int i0 = qMax(0, n - visibleCount);
+        const double xMin = x[i0];
+        const double xMax = x[n - 1];
+        const double span = qMax(xMax - xMin, 1e-6);
+        const double pad = qMax(0.05 * span, 0.05);
         m_updatingPlotRange = true;
-        m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+        m_customPlot->xAxis->setRange(xMin - pad, xMax + pad);
         m_updatingPlotRange = false;
     } else {
-        // 手动回看模式下，如果当前可视区已经不覆盖 FFT 数据，则自动拉回可视范围。
         const auto xr = m_customPlot->xAxis->range();
-        if (xr.upper < 0 || xr.lower > n) {
+        if (xr.upper < x.first() || xr.lower > x.last()) {
             const int visibleCount = qMin(m_featureCacheMax, 120);
+            const int i0 = qMax(0, n - visibleCount);
+            const double xMin = x[i0];
+            const double xMax = x[n - 1];
+            const double span = qMax(xMax - xMin, 1e-6);
+            const double pad = qMax(0.05 * span, 0.05);
             m_updatingPlotRange = true;
-            m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+            m_customPlot->xAxis->setRange(xMin - pad, xMax + pad);
             m_updatingPlotRange = false;
         }
     }
@@ -1308,9 +1419,10 @@ void MainWindow::renderBandPowerChart()
     if (n <= 0)
         return;
     ensureGraphCount(5);
+    applyLocalDateTimeXAxis(m_customPlot);
     QVector<double> x(n), d(n), t(n), a(n), b(n), g(n);
     for (int i = 0; i < n; ++i) {
-        x[i] = i;
+        x[i] = bandPointTimeKey(m_psdCache[i].wallMs, m_psdCache[i].tsMs);
         d[i] = m_psdCache[i].delta;
         t[i] = m_psdCache[i].theta;
         a[i] = m_psdCache[i].alpha;
@@ -1337,20 +1449,28 @@ void MainWindow::renderBandPowerChart()
     m_customPlot->legend->setBorderPen(QPen(QColor(80, 90, 110)));
     m_customPlot->legend->setTextColor(QColor(220, 230, 245));
     m_customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop | Qt::AlignRight);
-    m_customPlot->xAxis->setLabel(QStringLiteral("Window Index"));
     m_customPlot->yAxis->setLabel(QStringLiteral("Band Power"));
     if (m_chartAutoFollow) {
         const int visibleCount = qMin(m_featureCacheMax, 120);
+        const int i0 = qMax(0, n - visibleCount);
+        const double xMin = x[i0];
+        const double xMax = x[n - 1];
+        const double span = qMax(xMax - xMin, 1e-6);
+        const double pad = qMax(0.05 * span, 0.05);
         m_updatingPlotRange = true;
-        m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+        m_customPlot->xAxis->setRange(xMin - pad, xMax + pad);
         m_updatingPlotRange = false;
     } else {
-        // 手动回看模式下，如果当前可视区已经不覆盖 BandPower 数据，则自动拉回可视范围。
         const auto xr = m_customPlot->xAxis->range();
-        if (xr.upper < 0 || xr.lower > n) {
+        if (xr.upper < x.first() || xr.lower > x.last()) {
             const int visibleCount = qMin(m_featureCacheMax, 120);
+            const int i0 = qMax(0, n - visibleCount);
+            const double xMin = x[i0];
+            const double xMax = x[n - 1];
+            const double span = qMax(xMax - xMin, 1e-6);
+            const double pad = qMax(0.05 * span, 0.05);
             m_updatingPlotRange = true;
-            m_customPlot->xAxis->setRange(qMax(0, n - visibleCount), qMax(50, n));
+            m_customPlot->xAxis->setRange(xMin - pad, xMax + pad);
             m_updatingPlotRange = false;
         }
     }

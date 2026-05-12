@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QString>
 #include <QMap>
+#include <QSet>
 #include <core/psdfeatureextractor.h>
 
 class LogBuffer;
@@ -17,19 +18,22 @@ class CsvLogWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit CsvLogWorker(LogBuffer* buffer,QObject *parent = nullptr);
-    void setOutputPath(const QString &csvPath){m_csvPath=csvPath;}
+    explicit CsvLogWorker(LogBuffer *buffer, QObject *parent = nullptr);
+    void setOutputPath(const QString &csvPath) { m_csvPath = csvPath; }
     void setFlushIntervalMs(int ms) { m_flushIntervalMs = ms; }
     void setBatchSize(int n) { m_batchSize = n; }
-    void setSpectrumOutputPath(const QString & csvpath)
-    {m_spectrumCsvPath=csvpath;}
-    void setFftOutputPath(const QString &csvPath)
-    { m_fftCsvPath = csvPath; }
+    void setSpectrumOutputPath(const QString &csvpath) { m_spectrumCsvPath = csvpath; }
+    void setFftOutputPath(const QString &csvPath) { m_fftCsvPath = csvPath; }
 public slots:
-    void start();   // 打开文件 + 启动定时拉取
-    void stop();    // 停止定时器 + 关闭文件
+    void start();
+    void stop();
     void onSpectrumResult(const SpectrumResult &sp);
     void onFftResult(const FftResult &fr);
+    /** 将 wallMs 所在 UTC 秒标记为「该秒曾出现丢包/链路异常」（供 PSD/FFT 的 secLoss 列） */
+    void noteLossEventWallMs(qint64 wallMs);
+    /** 由 MainWindow 将采集线程的 streamGap 接到写盘线程（须为 public 槽以便 connect 取址） */
+    void onAcquisitionStreamGap(quint64 missed, quint64 prevSeq, quint64 curSeq, qint64 eventWallMs);
+    void onAcquisitionLinkDiag(const QString &category, const QString &message, qint64 eventWallMs);
 signals:
     void workerError(const QString &msg);
     void workerInfo(const QString &msg);
@@ -39,21 +43,10 @@ private slots:
     void onFlushTick();
 
 private:
-    void writeHeaderIfNeeded();
-    void mergeItem(const LogItem &it);
-    void flushMergedRows(bool forceAll);
-    void writeMergedRow(const QString &tsMs, quint64 seq, qint16 rawInt16, quint8 signalQuality,
-                        double rawUv, double preprocUv);
-
-    void writeSpectrumHeaderIfNeeded();
-    void writeSpectrumRow(const SpectrumResult &sp);
-
-    void writeFftHeaderIfNeeded();
-    void writeFftRow(const FftResult &fr);
-
     struct MergedRow
     {
         QString tsMs;
+        qint64 wallMs = -1;
         quint64 seq = 0;
         qint16 rawInt16 = 0;
         quint8 signalQuality = 255;
@@ -61,21 +54,36 @@ private:
         double preprocUv = 0.0;
         bool hasRaw = false;
         bool hasPreproc = false;
+        quint64 gapSincePrev = 0;
     };
 
-private:
-    LogBuffer *m_buf=nullptr;
+    void writeHeaderIfNeeded();
+    void mergeItem(const LogItem &it);
+    void flushMergedRows(bool forceAll);
+    void writeMergedRow(const QString &tsMs, quint64 seq, qint16 rawInt16, quint8 signalQuality,
+                        double rawUv, double preprocUv, quint64 gapSincePrev);
 
-    QString m_csvPath;//定义名字
+    /** 本行 ts/wall 所在 UTC 秒是否在 m_lossUtcSeconds 中：1 是，0 否 */
+    int secLossMarkForRow(qint64 wallMs, const QString &tsMs) const;
+
+    void writeSpectrumHeaderIfNeeded();
+    void writeSpectrumRow(const SpectrumResult &sp);
+
+    void writeFftHeaderIfNeeded();
+    void writeFftRow(const FftResult &fr);
+
+    LogBuffer *m_buf = nullptr;
+
+    QString m_csvPath;
     QFile m_file;
-    QTextStream m_out;//对象按“文本流”的方式写进文件
+    QTextStream m_out;
     QTimer m_timer;
-    int m_flushIntervalMs =100;//50~100ms
-    int m_batchSize =512;   //每次最多写多少条
-    bool m_headerWritten=false;
+    int m_flushIntervalMs = 100;
+    int m_batchSize = 512;
+    bool m_headerWritten = false;
     QMap<quint64, MergedRow> m_mergedRows;
     quint64 m_maxSeenSeq = 0;
-    int m_mergeLag = 256; // 允许 preproc 相对 raw 的延迟窗口
+    int m_mergeLag = 256;
     QString m_spectrumCsvPath;
     QFile m_spectrumFile;
     QTextStream m_spectrumOut;
@@ -85,6 +93,11 @@ private:
     QFile m_fftFile;
     QTextStream m_fftOut;
     bool m_fftHeaderWritten = false;
+
+    /** 曾发生 streamGap / linkDiag / 等记录事件的 UTC 秒键（epoch_ms/1000） */
+    QSet<qint64> m_lossUtcSeconds;
+    /** 上次 flush 时见过的 LogBuffer droppedCount，用于检测新增丢弃 */
+    int m_dropMarkWatermark = 0;
 };
 
 #endif // CSVLOGWORKER_H

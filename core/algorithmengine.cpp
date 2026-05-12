@@ -10,13 +10,14 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
     if (!m_running)
         return;
 
-    QDateTime now=QDateTime::currentDateTime();
-
+    const qint64 msWall = QDateTime::currentMSecsSinceEpoch();
+    const QString tsMsFmt = QDateTime::fromMSecsSinceEpoch(msWall, Qt::LocalTime)
+                                .toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
 
     RawSample s;
     s.raw = pkt.rawUv;
     s.raw_count = pkt.seq;
-    s.time = now.toString(Qt::TextDate);
+    s.time = tsMsFmt;
     m_buf.appendRawvalue(s);
 
     QVector<RawSample> chunk;
@@ -32,13 +33,14 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
     for (int i = 0; i < chunk.size(); ++i)
         x[i] = chunk[i].raw;
 
-    // 采样率不稳定：用 seq + 时间戳在线估计；解析失败退回标称值
     EegPreprocessPipeline::FsHint hint;
     hint.seq = (qint64)pkt.seq;
-    hint.ts_ms = -1;
-    if (!pkt.tsMs.isEmpty())
+    hint.ts_ms = pkt.wallMs;
+    if (hint.ts_ms <= 0 && !pkt.tsMs.isEmpty())
     {
-        const QDateTime pktTime = QDateTime::fromString(pkt.tsMs, Qt::TextDate);
+        QDateTime pktTime = QDateTime::fromString(pkt.tsMs, QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
+        if (!pktTime.isValid())
+            pktTime = QDateTime::fromString(pkt.tsMs, Qt::TextDate);
         if (pktTime.isValid())
             hint.ts_ms = pktTime.toMSecsSinceEpoch();
     }
@@ -57,11 +59,13 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
     pc.y = y;
     pc.seqStart = chunk.first().raw_count;
     pc.seqEnd = chunk.last().raw_count;
+    pc.anchorWallMs = pkt.wallMs;
+    pc.anchorSeq = pkt.seq;
     emit plotChunkReady(pc);
 
     // 3) 算法结果（示意）
     AlgoResult r;
-    r.tsMs = now.toString(Qt::TextDate);
+    r.tsMs = tsMsFmt;
     r.seqEnd = pc.seqEnd;
     r.score = rms;
     r.label = res.artifact_marked ? QStringLiteral("artifact") : QStringLiteral("clean");
@@ -70,6 +74,7 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
     //频谱功率结果
     SpectrumResult sp;
     sp.tsMs=r.tsMs;
+    sp.wallMs = msWall;
     sp.seqStart = pc.seqStart;
     sp.seqEnd = pc.seqEnd;
     sp.fsUsed = res.fs_used;
@@ -92,6 +97,7 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
 
     FftResult fr;
     fr.tsMs = r.tsMs;
+    fr.wallMs = msWall;
     fr.seqStart = pc.seqStart;
     fr.seqEnd = pc.seqEnd;
     fr.fsUsed = res.fs_used;
@@ -118,5 +124,5 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
 void AlgorithmEngine::resetState()
 {
     m_buf.clear(); // 清环形缓冲与游标
-    m_pp.reset();  // 清在线 fs 估计状态
+    m_pp.reset();
 }

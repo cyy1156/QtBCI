@@ -4,6 +4,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/QFile \
   D:/qt/6.10.2/mingw_64/include/QtCore/QMap \
   D:/qt/6.10.2/mingw_64/include/QtCore/QObject \
+  D:/qt/6.10.2/mingw_64/include/QtCore/QSet \
   D:/qt/6.10.2/mingw_64/include/QtCore/QString \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTextStream \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTimer \
@@ -55,6 +56,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/qgenericatomic.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qglobal.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qglobalstatic.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qhash.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qhashfunctions.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qiodevice.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qiodevicebase.h \
@@ -81,6 +83,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/qrefcount.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qscopedpointer.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qscopeguard.h \
+  D:/qt/6.10.2/mingw_64/include/QtCore/qset.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qshareddata.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qshareddata_impl.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/qspan.h \
