@@ -1,27 +1,28 @@
 
 #include "acquisitionengine.h"
 #include <QDateTime>
+#include <QTimeZone>
 
 AcquisitionEngine::AcquisitionEngine(QObject *parent) : QObject(parent)
 {
     m_serial = new SerialPort(this);
-    m_assembler = new ThinkGearFrameAssembler(this);
-    m_parser = new ThinkGearPayloadParser(this);
-    m_converter = new RawtOutUvProcessor(this);
+    m_assembler = new SerialEegFrameAssembler(this);
+    m_parser = new SerialEegPayloadParser(this);
+    m_converter = new RawToUvProcessor(this);
 
-    connect(m_serial, &SerialPort::dataReceived, m_assembler, &ThinkGearFrameAssembler::onBytes);
-    connect(m_assembler, &ThinkGearFrameAssembler::frameReady, this, &AcquisitionEngine::onAssemblerFrame);
-    connect(m_assembler, &ThinkGearFrameAssembler::rxBufferOverflowed, this,
+    connect(m_serial, &SerialPort::dataReceived, m_assembler, &SerialEegFrameAssembler::onBytes);
+    connect(m_assembler, &SerialEegFrameAssembler::frameReady, this, &AcquisitionEngine::onAssemblerFrame);
+    connect(m_assembler, &SerialEegFrameAssembler::rxBufferOverflowed, this,
             &AcquisitionEngine::onRxBufferOverflowed);
-    connect(m_assembler, &ThinkGearFrameAssembler::checksumFailureOccurred, this,
+    connect(m_assembler, &SerialEegFrameAssembler::checksumFailureOccurred, this,
             &AcquisitionEngine::onChecksumFailure);
-    connect(m_assembler, &ThinkGearFrameAssembler::lengthResyncOccurred, this,
+    connect(m_assembler, &SerialEegFrameAssembler::lengthResyncOccurred, this,
             &AcquisitionEngine::onLengthResync);
-    connect(m_parser, &ThinkGearPayloadParser::parseWarning, this, &AcquisitionEngine::warningMessage);
-    connect(m_parser, &ThinkGearPayloadParser::rawReceived, this, &AcquisitionEngine::onRawInt16);
-    connect(m_parser, &ThinkGearPayloadParser::signalQualityReceived, this, &AcquisitionEngine::onSignalQuality);
-    connect(m_parser, &ThinkGearPayloadParser::rawReceived, m_converter, &RawtOutUvProcessor::onRaw);
-    connect(m_converter, &RawtOutUvProcessor::uvValueReady, this, &AcquisitionEngine::onUvReady);
+    connect(m_parser, &SerialEegPayloadParser::parseWarning, this, &AcquisitionEngine::warningMessage);
+    connect(m_parser, &SerialEegPayloadParser::rawReceived, this, &AcquisitionEngine::onRawInt16);
+    connect(m_parser, &SerialEegPayloadParser::signalQualityReceived, this, &AcquisitionEngine::onSignalQuality);
+    connect(m_parser, &SerialEegPayloadParser::rawReceived, m_converter, &RawToUvProcessor::onRaw);
+    connect(m_converter, &RawToUvProcessor::uvValueReady, this, &AcquisitionEngine::onUvReady);
 }
 
 void AcquisitionEngine::onAssemblerFrame(const QByteArray &frame)
@@ -76,7 +77,8 @@ void AcquisitionEngine::onUvReady(double uv)
     const qint64 ms =
         (m_lastFrameWallMs >= 0) ? m_lastFrameWallMs : QDateTime::currentMSecsSinceEpoch();
     p.wallMs = ms;
-    p.tsMs = QDateTime::fromMSecsSinceEpoch(ms, Qt::LocalTime)
+    p.tsMs = QDateTime::fromMSecsSinceEpoch(ms, QTimeZone::utc())
+                 .toTimeZone(QTimeZone::systemTimeZone())
                  .toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
     p.seq = static_cast<quint64>(m_converter->sampleCount());
     p.rawInt16 = m_lastRawInt16;

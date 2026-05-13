@@ -10,18 +10,17 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/logwbuffer.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_frame_assembler.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_payload_parser.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/raw_to_uv_processor.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/data_handler_inc/data_handler.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/brainflow_array.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/brainflow_constants.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/brainflow_exception.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/shared_export.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/rawtouvprocessor.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearframeassembler.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearlinktester.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/data_handler/inc/data_handler.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_array.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_constants.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_exception.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/shared_export.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/QByteArray \
   D:/qt/6.10.2/mingw_64/include/QtCore/QCache \
   D:/qt/6.10.2/mingw_64/include/QtCore/QDateTime \
@@ -52,7 +51,6 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/qt/6.10.2/mingw_64/include/QtCore/QString \
   D:/qt/6.10.2/mingw_64/include/QtCore/QStringList \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTextStream \
-  D:/qt/6.10.2/mingw_64/include/QtCore/QThread \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTimeZone \
   D:/qt/6.10.2/mingw_64/include/QtCore/QTimer \
   D:/qt/6.10.2/mingw_64/include/QtCore/QVariant \

@@ -34,11 +34,17 @@ public:
     QLabel *labelProtocol;
     QComboBox *comboProtocol;
     QGroupBox *groupTarget;
+    QVBoxLayout *verticalLayoutTarget;
     QFormLayout *formLayoutTarget;
     QLabel *labelHost;
     QLineEdit *lineHost;
-    QLabel *labelPort;
-    QSpinBox *spinPort;
+    QLabel *labelPortPreproc;
+    QSpinBox *spinPortPreproc;
+    QLabel *labelPortFft;
+    QSpinBox *spinPortFft;
+    QLabel *labelPortPsd;
+    QSpinBox *spinPortPsd;
+    QLabel *labelPortDuplicateHint;
     QGroupBox *groupStreams;
     QVBoxLayout *verticalLayoutStreams;
     QCheckBox *checkEnableNetwork;
@@ -52,7 +58,7 @@ public:
     {
         if (NetworkConfigDialog->objectName().isEmpty())
             NetworkConfigDialog->setObjectName("NetworkConfigDialog");
-        NetworkConfigDialog->resize(420, 360);
+        NetworkConfigDialog->resize(520, 480);
         verticalLayout = new QVBoxLayout(NetworkConfigDialog);
         verticalLayout->setObjectName("verticalLayout");
         groupProtocol = new QGroupBox(NetworkConfigDialog);
@@ -74,7 +80,9 @@ public:
 
         groupTarget = new QGroupBox(NetworkConfigDialog);
         groupTarget->setObjectName("groupTarget");
-        formLayoutTarget = new QFormLayout(groupTarget);
+        verticalLayoutTarget = new QVBoxLayout(groupTarget);
+        verticalLayoutTarget->setObjectName("verticalLayoutTarget");
+        formLayoutTarget = new QFormLayout();
         formLayoutTarget->setObjectName("formLayoutTarget");
         labelHost = new QLabel(groupTarget);
         labelHost->setObjectName("labelHost");
@@ -86,18 +94,53 @@ public:
 
         formLayoutTarget->setWidget(0, QFormLayout::ItemRole::FieldRole, lineHost);
 
-        labelPort = new QLabel(groupTarget);
-        labelPort->setObjectName("labelPort");
+        labelPortPreproc = new QLabel(groupTarget);
+        labelPortPreproc->setObjectName("labelPortPreproc");
 
-        formLayoutTarget->setWidget(1, QFormLayout::ItemRole::LabelRole, labelPort);
+        formLayoutTarget->setWidget(1, QFormLayout::ItemRole::LabelRole, labelPortPreproc);
 
-        spinPort = new QSpinBox(groupTarget);
-        spinPort->setObjectName("spinPort");
-        spinPort->setMinimum(1);
-        spinPort->setMaximum(65535);
-        spinPort->setValue(50001);
+        spinPortPreproc = new QSpinBox(groupTarget);
+        spinPortPreproc->setObjectName("spinPortPreproc");
+        spinPortPreproc->setMinimum(1);
+        spinPortPreproc->setMaximum(65535);
+        spinPortPreproc->setValue(50001);
 
-        formLayoutTarget->setWidget(1, QFormLayout::ItemRole::FieldRole, spinPort);
+        formLayoutTarget->setWidget(1, QFormLayout::ItemRole::FieldRole, spinPortPreproc);
+
+        labelPortFft = new QLabel(groupTarget);
+        labelPortFft->setObjectName("labelPortFft");
+
+        formLayoutTarget->setWidget(2, QFormLayout::ItemRole::LabelRole, labelPortFft);
+
+        spinPortFft = new QSpinBox(groupTarget);
+        spinPortFft->setObjectName("spinPortFft");
+        spinPortFft->setMinimum(1);
+        spinPortFft->setMaximum(65535);
+        spinPortFft->setValue(50002);
+
+        formLayoutTarget->setWidget(2, QFormLayout::ItemRole::FieldRole, spinPortFft);
+
+        labelPortPsd = new QLabel(groupTarget);
+        labelPortPsd->setObjectName("labelPortPsd");
+
+        formLayoutTarget->setWidget(3, QFormLayout::ItemRole::LabelRole, labelPortPsd);
+
+        spinPortPsd = new QSpinBox(groupTarget);
+        spinPortPsd->setObjectName("spinPortPsd");
+        spinPortPsd->setMinimum(1);
+        spinPortPsd->setMaximum(65535);
+        spinPortPsd->setValue(50003);
+
+        formLayoutTarget->setWidget(3, QFormLayout::ItemRole::FieldRole, spinPortPsd);
+
+
+        verticalLayoutTarget->addLayout(formLayoutTarget);
+
+        labelPortDuplicateHint = new QLabel(groupTarget);
+        labelPortDuplicateHint->setObjectName("labelPortDuplicateHint");
+        labelPortDuplicateHint->setWordWrap(true);
+
+        verticalLayoutTarget->addWidget(labelPortDuplicateHint);
 
 
         verticalLayout->addWidget(groupTarget);
@@ -155,15 +198,18 @@ public:
         NetworkConfigDialog->setWindowTitle(QCoreApplication::translate("NetworkConfigDialog", "\347\275\221\347\273\234\350\256\276\347\275\256", nullptr));
         groupProtocol->setTitle(QCoreApplication::translate("NetworkConfigDialog", "\344\274\240\350\276\223\345\215\217\350\256\256", nullptr));
         labelProtocol->setText(QCoreApplication::translate("NetworkConfigDialog", "\345\215\217\350\256\256", nullptr));
-        groupTarget->setTitle(QCoreApplication::translate("NetworkConfigDialog", "\347\233\256\346\240\207\345\234\260\345\235\200\357\274\210UDP\357\274\211", nullptr));
+        groupTarget->setTitle(QCoreApplication::translate("NetworkConfigDialog", "\347\233\256\346\240\207\345\234\260\345\235\200\357\274\210UDP\357\274\214\344\270\211\346\265\201\345\220\204\347\253\257\345\217\243\357\274\211", nullptr));
         labelHost->setText(QCoreApplication::translate("NetworkConfigDialog", "IPv4 \344\270\273\346\234\272", nullptr));
-        labelPort->setText(QCoreApplication::translate("NetworkConfigDialog", "\347\253\257\345\217\243", nullptr));
+        labelPortPreproc->setText(QCoreApplication::translate("NetworkConfigDialog", "\351\242\204\345\244\204\347\220\206 PBC1 \347\253\257\345\217\243", nullptr));
+        labelPortFft->setText(QCoreApplication::translate("NetworkConfigDialog", "FFT \347\211\271\345\276\201 PBF1 \347\253\257\345\217\243", nullptr));
+        labelPortPsd->setText(QCoreApplication::translate("NetworkConfigDialog", "PSD \347\211\271\345\276\201 PBP1 \347\253\257\345\217\243", nullptr));
+        labelPortDuplicateHint->setText(QString());
         groupStreams->setTitle(QCoreApplication::translate("NetworkConfigDialog", "\345\217\221\351\200\201\347\232\204\346\225\260\346\215\256", nullptr));
         checkEnableNetwork->setText(QCoreApplication::translate("NetworkConfigDialog", "\345\220\257\347\224\250\347\275\221\347\273\234\345\217\221\351\200\201", nullptr));
         checkSendPreproc->setText(QCoreApplication::translate("NetworkConfigDialog", "\351\242\204\345\244\204\347\220\206\346\227\266\345\237\237\347\252\227\357\274\210PBC1\357\274\214\344\270\216 Python udp_infer_live \345\205\274\345\256\271\357\274\211", nullptr));
         checkSendFft->setText(QCoreApplication::translate("NetworkConfigDialog", "\351\242\221\346\256\265\345\212\237\347\216\207\357\274\210FFT \350\267\257\345\276\204\357\274\214PBF1\357\274\211", nullptr));
         checkSendPsd->setText(QCoreApplication::translate("NetworkConfigDialog", "\351\242\221\346\256\265\345\212\237\347\216\207\357\274\210PSD \350\267\257\345\276\204\357\274\214PBP1\357\274\211", nullptr));
-        labelHint->setText(QCoreApplication::translate("NetworkConfigDialog", "\346\217\220\347\244\272\357\274\232FFT/PSD \344\270\272\345\220\204\351\242\221\346\256\265\346\240\207\351\207\217\347\211\271\345\276\201\357\274\214\351\235\236\345\205\250\351\242\221\350\260\261\346\233\262\347\272\277\343\200\202", nullptr));
+        labelHint->setText(QCoreApplication::translate("NetworkConfigDialog", "\346\217\220\347\244\272\357\274\232FFT/PSD \344\270\272\345\220\204\351\242\221\346\256\265\346\240\207\351\207\217\347\211\271\345\276\201\357\274\214\351\235\236\345\205\250\351\242\221\350\260\261\346\233\262\347\272\277\343\200\202\344\270\211\347\253\257\345\217\243\347\233\270\345\220\214\345\210\231\351\200\200\345\214\226\344\270\272\345\215\225\347\253\257\345\217\243\346\267\267\346\224\266\357\274\214\344\270\215\346\216\250\350\215\220\343\200\202", nullptr));
     } // retranslateUi
 
 };

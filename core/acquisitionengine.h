@@ -3,9 +3,9 @@
 
 #include <QObject>
 #include "device/serialport.h"
-#include "thinkgear/thinkgearframeassembler.h"
-#include "thinkgear/thinkgearpayloadparser.h"
-#include "thinkgear/rawtouvprocessor.h"
+#include "device/serial_eeg/eeg_frame_assembler.h"
+#include "device/serial_eeg/eeg_payload_parser.h"
+#include "device/serial_eeg/raw_to_uv_processor.h"
 
 struct RawPacket {
     QString tsMs;       // 毫秒精度文本，建议 yyyy-MM-dd HH:mm:ss.zzz
@@ -51,9 +51,9 @@ private slots:
 
 private:
     SerialPort *m_serial = nullptr;
-    ThinkGearFrameAssembler *m_assembler = nullptr;
-    ThinkGearPayloadParser *m_parser = nullptr;
-    RawtOutUvProcessor *m_converter = nullptr;
+    SerialEegFrameAssembler *m_assembler = nullptr;
+    SerialEegPayloadParser *m_parser = nullptr;
+    RawToUvProcessor *m_converter = nullptr;
 
     qint16 m_lastRawInt16 = 0;
     quint8 m_lastSignalQuality = 255;

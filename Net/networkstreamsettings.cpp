@@ -2,12 +2,9 @@
 
 #include <algorithm>
 
-#include <QSettings>
+#include <core/app_settings.h>
 
 namespace {
-
-constexpr auto kOrg = "QtBCI";
-constexpr auto kApp = "QtBCI";
 
 quint16 clampPort(int v)
 {
@@ -20,7 +17,7 @@ void NetworkSettingsStore::load(NetworkStreamSettings *out)
 {
     if (!out)
         return;
-    QSettings s(kOrg, kApp);
+    QSettings s = userSettings();
     out->enabled = s.value(QStringLiteral("network/enabled"), true).toBool();
     out->protocol = s.value(QStringLiteral("network/protocol"), QStringLiteral("udp")).toString();
     if (out->protocol.isEmpty())
@@ -56,7 +53,7 @@ void NetworkSettingsStore::load(NetworkStreamSettings *out)
 
 void NetworkSettingsStore::save(const NetworkStreamSettings &in)
 {
-    QSettings s(kOrg, kApp);
+    QSettings s = userSettings();
     s.setValue(QStringLiteral("network/enabled"), in.enabled);
     s.setValue(QStringLiteral("network/protocol"), in.protocol);
     s.setValue(QStringLiteral("network/host"), in.host);

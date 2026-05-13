@@ -45,6 +45,7 @@ public:
     QPushButton *pushButton_save;
     QSpacerItem *verticalSpacer_6;
     QPushButton *pushButton_serialConfig;
+    QSpacerItem *verticalSpacer_7;
     QPushButton *pushButton_network;
     QSpacerItem *verticalSpacer;
     QPushButton *pushButton_picture;
@@ -133,6 +134,10 @@ public:
         pushButton_serialConfig->setObjectName("pushButton_serialConfig");
 
         verticalLayoutControl->addWidget(pushButton_serialConfig);
+
+        verticalSpacer_7 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        verticalLayoutControl->addItem(verticalSpacer_7);
 
         pushButton_network = new QPushButton(frameControl);
         pushButton_network->setObjectName("pushButton_network");

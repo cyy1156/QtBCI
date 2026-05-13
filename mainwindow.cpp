@@ -5,10 +5,10 @@
 #include "saveconfigdialog.h"
 #include "chartmodedialog.h"
 
-// 旧单链路对象（ThinkGearLinkTester）相关 include，注释保留
-// #include "thinkgear/thinkgearlinktester.h"
+#include <core/app_settings.h>
 #include <core/algorithmengine.h>
 #include <QDateTime>
+#include <QTimeZone>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFile>
@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <QHBoxLayout>
 #include <QScrollBar>
-#include <QSettings>
 #include <QComboBox>
 #include <QFormLayout>
 #include <QAction>
@@ -336,7 +335,8 @@ void MainWindow::initThreads()
             } else {
                 wallMs = QDateTime::currentMSecsSinceEpoch();
             }
-            const QString ts = QDateTime::fromMSecsSinceEpoch(wallMs, Qt::LocalTime)
+            const QString ts = QDateTime::fromMSecsSinceEpoch(wallMs, QTimeZone::utc())
+                                   .toTimeZone(QTimeZone::systemTimeZone())
                                    .toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
             LogItem li;
             li.tsMs = ts;
@@ -490,19 +490,6 @@ void MainWindow::initThreads()
                           .arg(m_netSettings.sendFft)
                           .arg(m_netSettings.sendPsd));
 }
-void MainWindow::setupTesterConnections()
-{
-    // 旧单链路连接点，三线程主链下不启用，注释保留
-    /*
-    if (!m_tester)
-        return;
-
-    connect(m_tester, &ThinkGearLinkTester::secondReport,
-            this, &MainWindow::onSecondReport);
-    connect(m_tester, &ThinkGearLinkTester::testMessage,
-            this, &MainWindow::onTestMessage);
-    */
-}
 QString MainWindow::makeDefaultPsdCsvPath()
 {
     const QString root=QStandardPaths::writableLocation(
@@ -592,15 +579,6 @@ void MainWindow::appendUiActionLog(const QString &category, const QString &messa
     out << "[" << ts << "] "
         << "[" << category << "] "
         << message << '\n';
-}
-void MainWindow::attachLinkTester(ThinkGearLinkTester *tester)
-{
-    // 旧单链路入口，三线程主链下不启用，注释保留
-    /*
-    m_tester=tester;
-    setupTesterConnections();
-    */
-    Q_UNUSED(tester);
 }
 /*void MainWindow::updateLogCsvPathUi()
 {
@@ -874,7 +852,7 @@ void MainWindow::on_pushButton_save_clicked()
 
 void MainWindow::loadSerialSettings()
 {
-    QSettings settings(QStringLiteral("QtBCI"), QStringLiteral("QtBCI"));
+    QSettings settings = userSettings();
     m_serialCfg.portName = settings.value(QStringLiteral("serial/portName"), QStringLiteral("COM7")).toString();
     m_serialCfg.baudRate = settings.value(QStringLiteral("serial/baudRate"), 57600).toInt();
     m_serialCfg.dataBits = static_cast<QSerialPort::DataBits>(
@@ -889,7 +867,7 @@ void MainWindow::loadSerialSettings()
 
 void MainWindow::saveSerialSettings()
 {
-    QSettings settings(QStringLiteral("QtBCI"), QStringLiteral("QtBCI"));
+    QSettings settings = userSettings();
     settings.setValue(QStringLiteral("serial/portName"), m_serialCfg.portName);
     settings.setValue(QStringLiteral("serial/baudRate"), m_serialCfg.baudRate);
     settings.setValue(QStringLiteral("serial/dataBits"), static_cast<int>(m_serialCfg.dataBits));
@@ -958,24 +936,7 @@ bool MainWindow::showSerialConfigDialog()
                           .arg(static_cast<int>(m_serialCfg.flowControl)));
     return true;
 }
-void MainWindow::onSecondReport(quint64 secIndex, int rawPerSec, int framePerSec, int warnPerSec, bool pass)
-{
-    const QString line = QStringLiteral("[%1] raw/s=%2 frame/s=%3 warn/s=%4 pass=%5")
-    .arg(secIndex)
-        .arg(rawPerSec)
-        .arg(framePerSec)
-        .arg(warnPerSec)
-        .arg(pass ? QStringLiteral("OK") : QStringLiteral("NO"));
-    ui->statusbar->showMessage(line, 1000);//状态栏临时显示 1 秒。
-    appendUiActionLog(QStringLiteral("STAT"), line);
-}
-
-void MainWindow::onTestMessage(const QString &msg)
-{
-    appendUiActionLog(QStringLiteral("SYS"), msg);
-}
-
- void MainWindow::on_pushButton_clear_clicked()
+void MainWindow::on_pushButton_clear_clicked()
 {
     const auto ret = QMessageBox::question(
         this,
@@ -1236,7 +1197,8 @@ void MainWindow::setupPlotInteractions()
             const QString name = plottable->name().isEmpty() ? QStringLiteral("curve") : plottable->name();
             QString xShow;
             if (m_chartMode == ChartMode::FftSpectrum || m_chartMode == ChartMode::BandPower) {
-                const QDateTime dt = QDateTime::fromMSecsSinceEpoch(qRound64(x * 1000.0), Qt::LocalTime);
+                const QDateTime dt = QDateTime::fromMSecsSinceEpoch(qRound64(x * 1000.0), QTimeZone::utc())
+                                         .toTimeZone(QTimeZone::systemTimeZone());
                 xShow = dt.isValid() ? dt.toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"))
                                      : QString::number(x, 'f', 3);
             } else {

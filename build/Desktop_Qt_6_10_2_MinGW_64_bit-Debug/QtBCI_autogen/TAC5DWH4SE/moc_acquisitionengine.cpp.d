@@ -1,9 +1,9 @@
 D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/TAC5DWH4SE/moc_acquisitionengine.cpp: D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/QtBCI_autogen/moc_predefs.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_frame_assembler.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_payload_parser.h \
+  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/raw_to_uv_processor.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/rawtouvprocessor.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearframeassembler.h \
-  D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/QByteArray \
   D:/qt/6.10.2/mingw_64/include/QtCore/QObject \
   D:/qt/6.10.2/mingw_64/include/QtCore/QString \

@@ -398,6 +398,12 @@
 			null
 		],
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.h",
+			"MU",
+			"EWIEGA46WW/moc_chartmodedialog.cpp",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h",
 			"MU",
 			"TAC5DWH4SE/moc_acquisitionengine.cpp",
@@ -440,6 +446,24 @@
 			null
 		],
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_frame_assembler.h",
+			"MU",
+			"3EMKZD2T5O/moc_eeg_frame_assembler.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_payload_parser.h",
+			"MU",
+			"3EMKZD2T5O/moc_eeg_payload_parser.cpp",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/raw_to_uv_processor.h",
+			"MU",
+			"3EMKZD2T5O/moc_raw_to_uv_processor.cpp",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.h",
 			"MU",
 			"GULY2SVRVA/moc_serialport.cpp",
@@ -464,57 +488,15 @@
 			null
 		],
 		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.h",
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.h",
 			"MU",
-			"O5CLXGGA5R/moc_changetest.cpp",
+			"EWIEGA46WW/moc_saveconfigdialog.cpp",
 			null
 		],
 		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/origintest.h",
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.h",
 			"MU",
-			"O5CLXGGA5R/moc_origintest.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/stream_sdk_for_pc.h",
-			"MU",
-			"O5CLXGGA5R/moc_stream_sdk_for_pc.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/threadteast.h",
-			"MU",
-			"O5CLXGGA5R/moc_threadteast.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/rawtouvprocessor.h",
-			"MU",
-			"JDVFSHZ2BO/moc_rawtouvprocessor.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgear.h",
-			"MU",
-			"JDVFSHZ2BO/moc_thinkgear.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearframeassembler.h",
-			"MU",
-			"JDVFSHZ2BO/moc_thinkgearframeassembler.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearlinktester.h",
-			"MU",
-			"JDVFSHZ2BO/moc_thinkgearlinktester.cpp",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.h",
-			"MU",
-			"JDVFSHZ2BO/moc_thinkgearpayloadparser.cpp",
+			"EWIEGA46WW/moc_serialconfigdialog.cpp",
 			null
 		]
 	],
@@ -549,10 +531,9 @@
 	"MOC_INCLUDES" : 
 	[
 		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI",
-		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear",
 		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing",
-		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc",
-		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/data_handler/inc",
+		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc",
+		"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/data_handler_inc",
 		"D:/qt/6.10.2/mingw_64/include/QtCore",
 		"D:/qt/6.10.2/mingw_64/include",
 		"D:/qt/6.10.2/mingw_64/mkspecs/win32-g++",
@@ -622,6 +603,11 @@
 			null
 		],
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.cpp",
+			"MU",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.cpp",
 			"MU",
 			null
@@ -657,6 +643,21 @@
 			null
 		],
 		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_frame_assembler.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_payload_parser.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/raw_to_uv_processor.cpp",
+			"MU",
+			null
+		],
+		[
 			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.cpp",
 			"MU",
 			null
@@ -682,42 +683,12 @@
 			null
 		],
 		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.cpp",
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.cpp",
 			"MU",
 			null
 		],
 		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/origintest.cpp",
-			"MU",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/stream_sdk_for_pc.cpp",
-			"MU",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/threadteast.cpp",
-			"MU",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/rawtouvprocessor.cpp",
-			"MU",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearframeassembler.cpp",
-			"MU",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearlinktester.cpp",
-			"MU",
-			null
-		],
-		[
-			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.cpp",
+			"D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.cpp",
 			"MU",
 			null
 		]

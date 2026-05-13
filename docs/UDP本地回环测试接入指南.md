@@ -1,6 +1,6 @@
 # UDP 本地回环测试接入指南（QtBCI）
 
-本文说明：**不改动现有 ThinkGear 串口组帧逻辑**的前提下，如何用 **UDP + 127.0.0.1** 做「一发一收」打通测试，以及代码建议放在哪、工程要改哪。
+本文说明：**不改动现有串口 EEG 组帧逻辑**的前提下，如何用 **UDP + 127.0.0.1** 做「一发一收」打通测试，以及代码建议放在哪、工程要改哪。
 
 ---
 
@@ -10,7 +10,7 @@
 
 | 环节 | 文件 | 作用 |
 |------|------|------|
-| 串口字节 → 帧 → 解析 | `core/acquisitionengine.cpp` | `ThinkGearFrameAssembler` / `ThinkGearPayloadParser` / `RawtOutUvProcessor` |
+| 串口字节 → 帧 → 解析 | `core/acquisitionengine.cpp` | `SerialEegFrameAssembler` / `SerialEegPayloadParser` / `RawToUvProcessor` |
 | 样本出炉 | 同上 `onUvReady()` | `emit rawPacketReady(p)` |
 | 算法消费 | `mainwindow.cpp` | `connect(m_acq, &AcquisitionEngine::rawPacketReady, m_alg, &AlgorithmEngine::onRawPacket, ...)` |
 

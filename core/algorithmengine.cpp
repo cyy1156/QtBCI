@@ -1,5 +1,6 @@
 #include "algorithmengine.h"
 #include <QDateTime>
+#include <QTimeZone>
 #include "acquisitionengine.h"  // 新增：提供 RawPacket 完整定义
 #include "core/psdfeatureextractor.h"
 #include "core/fftfeatureextractor.h"
@@ -11,7 +12,8 @@ void AlgorithmEngine::onRawPacket(const RawPacket &pkt)
         return;
 
     const qint64 msWall = QDateTime::currentMSecsSinceEpoch();
-    const QString tsMsFmt = QDateTime::fromMSecsSinceEpoch(msWall, Qt::LocalTime)
+    const QString tsMsFmt = QDateTime::fromMSecsSinceEpoch(msWall, QTimeZone::utc())
+                                .toTimeZone(QTimeZone::systemTimeZone())
                                 .toString(QStringLiteral("yyyy-MM-dd HH:mm:ss.zzz"));
 
     RawSample s;

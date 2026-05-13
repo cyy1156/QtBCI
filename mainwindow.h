@@ -7,9 +7,11 @@
 #include <QPlainTextEdit>
 #include <QPointF>
 #include "QCustomPlot/qcustomplot.h"
-#include<thinkgear/thinkgearlinktester.h>
 #include<QFile>
 #include<QTextStream>
+#include <QTimeZone>
+#include <core/csvlogworker.h>
+#include <core/logwbuffer.h>
 #include<core/acquisitionengine.h>
 #include<core/algorithmengine.h>
 #include<Net/udptelemetryhub.h>
@@ -28,7 +30,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void attachLinkTester(ThinkGearLinkTester *tester);
 
 private slots:
     void on_pushButton_start_clicked();
@@ -37,19 +38,13 @@ private slots:
     void on_pushButton_save_clicked();
     /** 快捷打开当前 CSV（或所在文件夹） */
     void on_pushButton_openLogCsv_clicked();
-    void onSecondReport(quint64 secIndex, int rawPerSec, int framePerSec, int warnPerSec, bool pass);
-    void onTestMessage(const QString &msg);
     void onPlotRefreshTick();
     void on_pushButton_picture_clicked();
 
 private:
-    void setupTesterConnections();
-    /** 默认目录下的 CSV 路径（每次「开始」可生成新文件名） */
-    static QString makeDefaultCsvPath();
-    void updateLogCsvPathUi();
+    void updateSavePathUi();
 
     Ui::MainWindow *ui;
-    ThinkGearLinkTester *m_tester = nullptr;
     /** 最近一次为「写 CSV」生成的绝对路径；不保存时为空 */
     QString m_currentCsvPath;
 
@@ -57,7 +52,7 @@ private:
     bool m_uiTxtLoggingEnabled = true;
     bool m_psdLoggingEnable = false;
     bool m_fftLoggingEnable = false;
-    // EEG 文件路径（传给 ThinkGearLinkTester/CsvLogWorker）
+    // EEG 文件路径（传给 CsvLogWorker）
 
     QString m_eegCsvPath;
     // 操作日志 txt 路径（MainWindow 自己写）
@@ -70,7 +65,6 @@ private:
     static QString makeDefaultUiTxtPath();
     static QString makeDefaultFftCsvPath();
 
-    void updateSavePathUi();
     void appendUiActionLog(const QString &category, const QString &message);
     void appendLogLine(const QString &line);
     void loadSerialSettings();

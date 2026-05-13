@@ -14,6 +14,8 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/CMakeFiles/3.30.5/CMakeRCCompiler.cmake \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/CMakeFiles/3.30.5/CMakeSystem.cmake \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI_autogen/moc_predefs.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/acquisitionengine.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/algorithmengine.cpp \
@@ -28,37 +30,30 @@ QtBCI_autogen/timestamp: \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/pictureandalgbuffer.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/core/psdfeatureextractor.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_frame_assembler.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_frame_assembler.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_payload_parser.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/eeg_payload_parser.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/raw_to_uv_processor.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serial_eeg/raw_to_uv_processor.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/device/serialport.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/main.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/data_handler_inc/data_handler.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/brainflow_array.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/brainflow_constants.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/brainflow_exception.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/openbci/brainflow_headers/utils_inc/shared_export.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/data_filter.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.cpp \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/preprocessing/eeg_preprocess_pipeline.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/changetest.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/origintest.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/origintest.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/stream_sdk_for_pc.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/stream_sdk_for_pc.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/threadteast.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/stream_sdk_for_pc/threadteast.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/rawtouvprocessor.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/rawtouvprocessor.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgear.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearframeassembler.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearframeassembler.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearlinktester.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearlinktester.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.cpp \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/thinkgear/thinkgearpayloadparser.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/data_handler/inc/data_handler.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_array.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_constants.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/brainflow_exception.h \
-	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/brainflow-master/brainflow-master/src/utils/inc/shared_export.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.h \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.cpp \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.h \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QByteArray \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QCache \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QDateTime \
@@ -89,7 +84,6 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QString \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QStringList \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QTextStream \
-	D:/qt/6.10.2/mingw_64/include/QtCore/QThread \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QTimeZone \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QTimer \
 	D:/qt/6.10.2/mingw_64/include/QtCore/QVariant \
@@ -535,7 +529,6 @@ QtBCI_autogen/timestamp: \
 	D:/qt/6.10.2/mingw_64/include/QtSerialPort/qserialport.h \
 	D:/qt/6.10.2/mingw_64/include/QtSerialPort/qserialportglobal.h \
 	D:/qt/6.10.2/mingw_64/include/QtSerialPort/qtserialportexports.h \
-	D:/qt/6.10.2/mingw_64/include/QtWidgets/QApplication \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QCommonStyle \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QDialog \
 	D:/qt/6.10.2/mingw_64/include/QtWidgets/QLayout \
@@ -1248,5 +1241,8 @@ QtBCI_autogen/timestamp: \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h \
 	D:/qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wctype.h \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkconfigdialog.ui \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/chartmodedialog.ui \
 	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/mainwindow.ui \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/saveconfigdialog.ui \
+	D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/serialconfigdialog.ui \
 	D:/qt/Tools/CMake_64/bin/cmake.exe

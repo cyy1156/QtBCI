@@ -2,6 +2,7 @@ D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/QtBCI_autogen/moc_predefs.h \
   D:/360MoveData/Users/ckgxnn/Desktop/QtBCI/QtBCI/Net/networkstreamsettings.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/QString \
+  D:/qt/6.10.2/mingw_64/include/QtCore/QtGlobal \
   D:/qt/6.10.2/mingw_64/include/QtCore/q17memory.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/q20functional.h \
   D:/qt/6.10.2/mingw_64/include/QtCore/q20iterator.h \

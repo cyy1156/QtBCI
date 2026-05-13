@@ -8,6 +8,9 @@ qt_standard_project_setup()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# BrainFlow 头文件与 DataHandler 预编译库：与 CMakeLists.txt 同目录下的 openbci/（便于仅推送 QtBCI 子目录到 GitHub）
+set(OPENBCI_VENDOR_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/openbci")
+
 qt_add_executable(QtBCI
     MANUAL_FINALIZATION
     WIN32 MACOSX_BUNDLE
@@ -18,20 +21,14 @@ qt_add_executable(QtBCI
     chartmodedialog.h chartmodedialog.cpp chartmodedialog.ui
     serialconfigdialog.h serialconfigdialog.cpp serialconfigdialog.ui
     saveconfigdialog.h saveconfigdialog.cpp saveconfigdialog.ui
-    thinkgear/thinkgear.h
 
     core/pictureandalgbuffer.h core/pictureandalgbuffer.cpp
     QCustomPlot/qcustomplot.cpp QCustomPlot/qcustomplot.h
-    stream_sdk_for_pc/stream_sdk_for_pc.cpp stream_sdk_for_pc/stream_sdk_for_pc.h
     core/logwbuffer.h core/logwbuffer.cpp
-    stream_sdk_for_pc/origintest.h stream_sdk_for_pc/origintest.cpp
-    stream_sdk_for_pc/changetest.h stream_sdk_for_pc/changetest.cpp
-    stream_sdk_for_pc/threadteast.h stream_sdk_for_pc/threadteast.cpp
     device/serialport.h device/serialport.cpp
-    thinkgear/thinkgearframeassembler.h thinkgear/thinkgearframeassembler.cpp
-    thinkgear/thinkgearpayloadparser.h thinkgear/thinkgearpayloadparser.cpp
-    thinkgear/rawtouvprocessor.h thinkgear/rawtouvprocessor.cpp
-    thinkgear/thinkgearlinktester.h thinkgear/thinkgearlinktester.cpp
+    device/serial_eeg/eeg_frame_assembler.h device/serial_eeg/eeg_frame_assembler.cpp
+    device/serial_eeg/eeg_payload_parser.h device/serial_eeg/eeg_payload_parser.cpp
+    device/serial_eeg/raw_to_uv_processor.h device/serial_eeg/raw_to_uv_processor.cpp
     core/csvlogworker.h core/csvlogworker.cpp
     core/acquisitionengine.h core/acquisitionengine.cpp
     core/algorithmengine.h core/algorithmengine.cpp
@@ -43,12 +40,8 @@ qt_add_executable(QtBCI
     Net/udptelemetryhub.h Net/udptelemetryhub.cpp
     Net/networkconfigdialog.h Net/networkconfigdialog.cpp
     Net/networkconfigdialog.ui
-
-
 )
 
-# QCustomPlot 的翻译单元非常大，在 MinGW 下容易触发 "too many sections / file too big"。
-# 只对该源文件加编译器参数，避免影响 AutoMOC / 预定义宏生成（仅 MinGW）。
 if(MINGW)
     set_source_files_properties(
         QCustomPlot/qcustomplot.cpp
@@ -65,66 +58,19 @@ target_link_libraries(QtBCI
         Qt::Network
 )
 
-#
-# ThinkGear Stream SDK for PC（仅 x64）
-#
-# 说明：
-# - 你现在把 `thinkgear.h` 放到了 `QtBCI/QtBCI/thinkgear/thinkgear.h`
-# - 这里同时需要 x64 的 `thinkgear64.lib` + `thinkgear64.dll` 用于链接与运行时拷贝
-#
-set(THINKGEAR_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/thinkgear")
 set(PREPROCESSING_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/preprocessing")
 
-set(THINKGEAR_INC_DIR "${THINKGEAR_ROOT}")
-
-if (NOT EXISTS "${THINKGEAR_INC_DIR}/thinkgear.h")
-    message(FATAL_ERROR "thinkgear.h not found. Expect: ${THINKGEAR_INC_DIR}/thinkgear.h")
-endif()
-
-# 允许你在不同目录结构下放置 lib/dll（只要存在其中一种就行）
-set(_THINKGEAR_LIB_CANDIDATES
-    "${THINKGEAR_ROOT}/libs/x64/thinkgear64.lib"
-    "${THINKGEAR_ROOT}/x64/thinkgear64.lib"
-    "${THINKGEAR_ROOT}/thinkgear64.lib"
-)
-
-set(_THINKGEAR_DLL_CANDIDATES
-    "${THINKGEAR_ROOT}/libs/x64/thinkgear64.dll"
-    "${THINKGEAR_ROOT}/x64/thinkgear64.dll"
-    "${THINKGEAR_ROOT}/thinkgear64.dll"
-)
-
-set(THINKGEAR_LIB "")
-foreach(p IN LISTS _THINKGEAR_LIB_CANDIDATES)
-    if (EXISTS "${p}")
-        set(THINKGEAR_LIB "${p}")
-        break()
-    endif()
-endforeach()
-
-set(THINKGEAR_DLL "")
-foreach(p IN LISTS _THINKGEAR_DLL_CANDIDATES)
-    if (EXISTS "${p}")
-        set(THINKGEAR_DLL "${p}")
-        break()
-    endif()
-endforeach()
-
-if (THINKGEAR_LIB STREQUAL "")
-    message(FATAL_ERROR "thinkgear64.lib not found. Put it under one of: ${_THINKGEAR_LIB_CANDIDATES}")
-endif()
-
-if (THINKGEAR_DLL STREQUAL "")
-    message(FATAL_ERROR "thinkgear64.dll not found. Put it under one of: ${_THINKGEAR_DLL_CANDIDATES}")
-endif()
-
-# BrainFlow DataHandler 库（DataFilter 的底层实现）
+# BrainFlow DataHandler 预编译库（优先工程内 openbci/lib/...，其次 preprocessing/）
 set(_DATAHANDLER_LIB_CANDIDATES
+    "${OPENBCI_VENDOR_ROOT}/lib/mingw_64/DataHandler.lib"
+    "${OPENBCI_VENDOR_ROOT}/lib/DataHandler.lib"
     "${PREPROCESSING_ROOT}/DataHandler.lib"
     "${PREPROCESSING_ROOT}/data_handler.lib"
 )
 
 set(_DATAHANDLER_DLL_CANDIDATES
+    "${OPENBCI_VENDOR_ROOT}/lib/mingw_64/DataHandler.dll"
+    "${OPENBCI_VENDOR_ROOT}/lib/DataHandler.dll"
     "${PREPROCESSING_ROOT}/DataHandler.dll"
     "${PREPROCESSING_ROOT}/data_handler.dll"
 )
@@ -146,7 +92,7 @@ foreach(p IN LISTS _DATAHANDLER_DLL_CANDIDATES)
 endforeach()
 
 if (DATAHANDLER_LIB STREQUAL "")
-    message(FATAL_ERROR "DataHandler.lib not found. Checked: ${_DATAHANDLER_LIB_CANDIDATES}")
+    message(FATAL_ERROR "DataHandler.lib not found. Place under openbci/lib/... or preprocessing/. Checked: ${_DATAHANDLER_LIB_CANDIDATES}")
 endif()
 
 if (DATAHANDLER_DLL STREQUAL "")
@@ -156,16 +102,17 @@ endif()
 target_include_directories(QtBCI
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}"
-        "${THINKGEAR_INC_DIR}"
         "${CMAKE_CURRENT_SOURCE_DIR}/preprocessing"
 )
 
-# BrainFlow DataFilter 头文件目录（给 preprocessing/data_filter.h 使用）
+# BrainFlow 头文件：优先工程根目录下 openbci/brainflow_headers/，兼容旧 brainflow-master 路径
 set(_BRAINFLOW_UTILS_INC_CANDIDATES
+    "${OPENBCI_VENDOR_ROOT}/brainflow_headers/utils_inc"
     "${CMAKE_CURRENT_SOURCE_DIR}/../brainflow-master/brainflow-master/src/utils/inc"
     "${CMAKE_CURRENT_SOURCE_DIR}/../../brainflow-master/brainflow-master/src/utils/inc"
 )
 set(_BRAINFLOW_DATA_HANDLER_INC_CANDIDATES
+    "${OPENBCI_VENDOR_ROOT}/brainflow_headers/data_handler_inc"
     "${CMAKE_CURRENT_SOURCE_DIR}/../brainflow-master/brainflow-master/src/data_handler/inc"
     "${CMAKE_CURRENT_SOURCE_DIR}/../../brainflow-master/brainflow-master/src/data_handler/inc"
 )
@@ -187,7 +134,7 @@ foreach(p IN LISTS _BRAINFLOW_DATA_HANDLER_INC_CANDIDATES)
 endforeach()
 
 if (BRAINFLOW_UTILS_INC STREQUAL "")
-    message(FATAL_ERROR "brainflow_array.h not found. Checked: ${_BRAINFLOW_UTILS_INC_CANDIDATES}")
+    message(FATAL_ERROR "brainflow_array.h not found. Populate ${OPENBCI_VENDOR_ROOT}/brainflow_headers/utils_inc or install brainflow-master alongside. Checked: ${_BRAINFLOW_UTILS_INC_CANDIDATES}")
 endif()
 
 if (BRAINFLOW_DATA_HANDLER_INC STREQUAL "")
@@ -202,13 +149,11 @@ target_include_directories(QtBCI
 
 target_link_libraries(QtBCI
     PRIVATE
-        "${THINKGEAR_LIB}"
         "${DATAHANDLER_LIB}"
 )
 
 add_custom_command(TARGET QtBCI POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${THINKGEAR_DLL}"
         "${DATAHANDLER_DLL}"
         "$<TARGET_FILE_DIR:QtBCI>"
 )
