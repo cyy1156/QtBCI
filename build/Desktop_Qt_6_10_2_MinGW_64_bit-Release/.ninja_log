@@ -83,7 +83,7 @@
 5684	15762	7989121960229940	CMakeFiles/QtBCI.dir/build/Desktop_Qt_6_10_2_MinGW_64_bit-Release/.rcc/qmlcache/QtBCI_ui/qml/theme/Theme_qml.cpp.obj	23d4d9e315491e63
 5629	36517	7989121959669801	CMakeFiles/QtBCI.dir/ui/bridge/uibridge.cpp.obj	1bff35b206339df6
 4493	9672	8002751420940584	CMakeFiles/QtBCI.dir/Net/preprocchunkudpsender.cpp.obj	276a89f06e14950d
-87	2849	8003894036000997	build.ninja	c1e64117aac74cf0
+87	2849	8004734541040409	build.ninja	c1e64117aac74cf0
 7028	12211	8003562830399273	CMakeFiles/QtBCI.dir/device/serial_eeg/eeg_payload_parser.cpp.obj	4b0a7d8999c2038a
 6443	12385	8003562824582775	CMakeFiles/QtBCI.dir/chartmodedialog.cpp.obj	eb435f0163d7022a
 6956	12461	8003562829610931	CMakeFiles/QtBCI.dir/device/serial_eeg/eeg_frame_assembler.cpp.obj	12887c2b0ca07fa5
